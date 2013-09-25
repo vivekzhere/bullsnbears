@@ -1,7 +1,7 @@
 <?php
 	$server = "localhost";
 	$sqlid = "nitcfest_bnbuser";
-	$sqlpass = "g00dpa\$\$w0rd";
+	$sqlpass = "BnB123456";
 	$bnbdbase = "nitcfest_bnb";
 	$short_max = 200;
 	$start_time = "09";//'o clock market opens

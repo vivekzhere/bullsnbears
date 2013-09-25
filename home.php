@@ -1,4 +1,4 @@
-<?php header("Location: rankings.php");
+<?php 
 require_once("includes/global.php"); ?>
 <?php
 

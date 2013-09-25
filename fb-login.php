@@ -85,7 +85,7 @@
 	else {
 			$loginUrl = $facebook->getLoginUrl(array(
 			'scope' => $scope,
-			'redirect_uri' => "http://bullsnbears.tathva.org/fb-login.php",
+			'redirect_uri' => "http://tathva.org/theta/bnb/bullsnbears/fb-login.php",
 			));
 			print('<script> top.location.href=\'' . $loginUrl . '\'</script>');		
 	}	 	

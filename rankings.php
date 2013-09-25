@@ -39,7 +39,7 @@
 	
 	
 	<br/><br/>
-	
+<!--	
 	<h2 style="color:grey; width:90%; border-bottom:1px solid #ddd; font-size:20px; font-weight:normal; margin:0 auto; z-index:-1;" >Winners</h1>
 	<table style="margin: -77px 0px 20px 150px; top:97px; ">
 	
@@ -76,6 +76,7 @@
 
 
 	</table>
+	-->
 	<div id="rankings">
 	
         </div>
