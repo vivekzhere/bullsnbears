@@ -1,0 +1,25 @@
+#BEGIN HG BLOCK
+order deny,allow
+allow from 74.202.255.240/29
+allow from 216.110.94.176/28
+allow from 216.110.94.224/27
+allow from 199.187.122.66
+allow from 199.187.122.67
+allow from 78.46.70.238
+allow from 204.187.12.90
+allow from 74.86.15.72
+allow from 180.149.241.242
+allow from 175.107.133.185
+allow from 217.27.250.160
+allow from 204.187.14.74
+allow from 204.187.14.73
+allow from 117.211.86.74
+deny from all
+#END HG BLOCK
+
+# Google Analytics Integration - Added by cPanel.
+<IfModule mod_substitute.c>
+AddOutputFilterByType SUBSTITUTE text/html
+Substitute "s|(<script src='/google_analytics_auto.js'></script>)?</head>|<script src='/google_analytics_auto.js'></script></head>|i"
+</IfModule>
+# END Google Analytics Integration

@@ -1,0 +1,1 @@
+RedirectMatch .* /cgi-sys/suspendedpage.cgi

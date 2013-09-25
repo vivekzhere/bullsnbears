@@ -1,0 +1,129 @@
+@media screen{
+  #navigation { position: fixed; }
+}
+
+@media handheld {
+  #navigation { position: static; }
+  #footer { display:none;}
+  #ticker_tape { display:none;}
+}
+
+
+body,h1,h2,h3,h4,h5,h6,ul,div,marquee,p
+{
+	margin:0;
+	padding:0;
+}
+h2{text-align:center;}
+
+
+html{ margin:0; }
+
+body 
+{  
+	margin:0 auto; 
+	width:960px; 
+	background:#EEEEEE;  
+	font-family:arial, sans-serif;
+}
+
+li{ list-style-type:none; }
+
+p.wrong,p#wrong
+{
+	margin:0;
+	font-size:100%; 
+	color:#ff5533; 
+	letter-spacing:.8px; 
+	font-weight:bold; 
+	padding:0;
+	text-align:center;
+}
+
+div#content
+{ 
+	margin:0 auto;  
+	width:960px;  
+	min-height:100%;  
+	background:white;  
+	max-height:100
+}
+
+div#banner 
+{ 
+        width: 960px;
+        height: 250px;
+        background: url('../images/banner.jpg') transparent no-repeat;
+        text-indent: -9999px;
+        z-index: 1000;
+	box-shadow: 1px 1px 20px #888888;	
+	
+}
+
+
+div#time 
+{ 
+	padding:8px; 
+	font-size:12px; 
+	color: grey; 
+	float:right;
+}
+div#content_main
+{ 
+	padding-top:20px;
+	min-height:520px; 
+	max-height:9600px; 
+	width:100%; 
+	font-size:90%; 
+	-moz-box-shadow:0 0 10px 0 #ddd; 
+	-webkit-box-shadow:0 0 10px 0 #ddd; 
+	-o-box-shadow:0 0 10px 0 #ddd; 
+}
+
+
+
+
+div#tathvaad , #sponsorad
+{ 
+        width: 205px;
+        height: 400px;
+/*background: none repeat scroll 0 0 #EEEEEE;
+border-radius: 5px 5px 5px 5px;
+        border: 1px solid #ccc;
+       // background: url('../images/tathvabanner.jpg') transparent no-repeat;*/
+        text-indent: -9999px;
+        z-index: 1000;
+        float:left;
+margin:10px 10px 10px 10px;
+	
+}
+div#sponsorad{float:right;}
+
+div#fb
+{      
+height:400px;
+width:450px;
+	
+	
+	
+	box-shadow: 1px 1px 2px #FFFFFF inset;
+	
+	padding: 1em;
+	text-shadow: 0 1px 0 #FFFFFF;
+float:left;
+margin:10px;
+font-family:electrolize;
+ border: 1px solid #80B2CC;
+ background: none repeat scroll 0 0 #F5F5F5;
+text-align:center;
+}
+
+
+
+div#loginbutton {
+	background:url("../images/login2.png") repeat scroll 0% 0% transparent;
+	height:44px;
+	width:262px;
+	margin:0px auto 30px;
+        
+}
