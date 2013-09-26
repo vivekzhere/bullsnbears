@@ -1,5 +1,5 @@
 <?php  require_once("includes/global.php");
-if($_SESSION['playerid']!='100001351617375' && $_SESSION['playerid']!='100002423133536' && $_SESSION['playerid']!='100000534273222' && $_SESSION['playerid']!='1042067347'  )
+if($_SESSION['playerid']!='100001351617375' && $_SESSION['playerid']!='100002423133536' && $_SESSION['playerid']!='100000534273222' && $_SESSION['playerid']!='1042067347' && $_SESSION['playerid']!='100001074618086'  )
 		header("Location: index.php");
 echo "<div id='feedback'>
 	<form action='sendmsg.php' method='POST' id='showform'>

@@ -21,6 +21,7 @@
 			mysql_query($sql);
 		}
 		mysql_close($connection);
+		echo(date("Y-m-d",time()));
 	}
 	else
 	  header('Location:../home.php');

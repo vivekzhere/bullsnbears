@@ -59,11 +59,6 @@ $(document).ready(function()
 		else
 			$t_type = 'Short Sell';			
 		$symbol = $transaction['symbol'];
-		/*
-		$sql = "select name from symbols where symbol = '{$symbol}'";
-                $result2 = mysql_query($sql) or die(mysql_error());
-                $name = mysql_fetch_assoc($result2);
-		*/
 								
 		$amount = $transaction['amount'];
 		$value = $transaction['value'];

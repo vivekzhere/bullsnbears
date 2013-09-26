@@ -1,4 +1,4 @@
-<?php header('Refresh: 120');
+<?php 
 	require_once("../includes/global.php");
 	include("./stock_update.php");
 	$mt = strftime("%H", time());
@@ -8,9 +8,6 @@
 	{
 	if(($mt > $start_time ||($mt == $start_time && $mt_m >= $start_time_min)) && $mt_d != "sunday" && $mt_d != "saturday" && ($mt < $end_time || ($mt ==$end_time && $mt_m <= $end_time_min)))
 	{	
-		echo date("Y-m-d H:i:s");		
-		//to update market_val
-		//to be run after market closes
 		$sql = "select symbol from symbols";
 		$result = mysql_query($sql);
 		$n = mysql_num_rows($result);

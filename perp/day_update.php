@@ -26,6 +26,7 @@ Day Worth of a player is the Net Worth before the market begins. Used to calcula
 		$sql = "delete from schedule where pend_no_shares='0'";
 		mysql_query($sql) or die(mysql_error());		
 		mysql_close($connection);
+		echo(date("Y-m-d",time()));
 	}
 	else
 	  header('Location:../home.php');

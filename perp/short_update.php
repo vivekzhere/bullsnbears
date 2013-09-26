@@ -52,6 +52,7 @@
 			
 		$sql = "update player set liq_cash = '$money', short_val=0 where id = '$id'";
 		$resultset = mysql_query($sql) or die(mysql_error());
+		echo(date("Y-m-d",time()));
 		}
 	}
 	else

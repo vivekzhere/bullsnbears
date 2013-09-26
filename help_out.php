@@ -18,16 +18,6 @@
 	<?php 
 	if(isset($_SESSION['username']))
 		navigation("help");
-	else
-	echo "<div id=\"banner\">
-		<h1>Bulls And Bears</h1>
-	</div><!-- banner -->
-	<div id=\"navigation\">
-		<ul>
-			<li><a href=\"index.php\">Login</a></li>
-			<li class=\"page\"><span>Help</span></li>
-		</ul>
-	</div>";
 	?>
 <br/>
          <div id="portfolio">

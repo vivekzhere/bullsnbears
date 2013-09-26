@@ -40,6 +40,7 @@ if($_GET['key']=="Ti1lLSK65bds")
 		$sql = "update player set market_val= {$market_val}, short_val = {$short_val} where id ='$id'";
 		//echo $sql."<br />";
 		mysql_query($sql) or die(mysql_error());
+		echo(date("Y-m-d",time()));
 	}
 }
 ?>
