@@ -115,7 +115,7 @@
 		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
 		<html>
 		<head>
-		  <title>Bulls n' Bears | Tathva '12</title>
+		  <title>Bulls n' Bears | Tathva '13</title>
 		  <meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\" />
 		  <meta name=\"description\" content=\"bandb home\" />
 		  <meta name=\"keywords\" content=\"stock simulator\" />

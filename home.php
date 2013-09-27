@@ -102,8 +102,7 @@ metadetails();
 			<!--<input type='button' onclick='confirm_show()' value='Reset Account'>-->
 		</div><!-- details -->
 		<div id='nifty'>
-			<img src='http://chart.finance.yahoo.com/t?s=^NSEI&lang=en-IN&region=IN&width=300&height=180'>
-		
+			<img style='width: 400px; height: 240px; position: relative; left: -50px;' src='http://chart.finance.yahoo.com/t?s=^NSEI&lang=en-IN&region=IN&width=600&height=360'>
 		</div>
 		
 	</div><!-- home -->

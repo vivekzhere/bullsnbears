@@ -18,7 +18,7 @@
 		$whigh = $values['week_high'];
 		$wlow = $values['week_low'];
 		$change = $values['change'];
-		$stock_details = "<div id=\"graph\"><img src=\"http://chart.finance.yahoo.com/t?s=".urlencode($symbol)."&lang=en-IN&region=IN&width=300&height=180\"></div><br/>";
+		$stock_details = "<div id=\"graph\"><img src=\"http://ichart.finance.yahoo.com/z?s=".substr(urlencode($symbol), 0, 9).".NS\"></div><br/>";
 		$stock_details .="<div id=\"stock_details\">
 						<h2>$stock_name</h2>
 						<ul>
