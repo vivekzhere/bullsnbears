@@ -81,7 +81,7 @@
 							{
 								
 								$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-								$hsql = "insert into history values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
+								$hsql = "insert into history (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
 								mysql_query($hsql) or die(mysql_error());
 								
 								
@@ -135,7 +135,7 @@
 							if($resultset)
 							{
 								$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-								$hsql = "insert into history values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
+								$hsql = "insert into history (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
 								mysql_query($hsql) or die(mysql_error());
 								
 								
@@ -193,7 +193,7 @@ $sql="select * from bought_stock where id = '$id' and symbol = '{$pschedule['sym
 								
 								$resultset = mysql_query($sql) or die(mysql_error());
 								$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-								$hsql = "insert into history values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
+								$hsql = "insert into history (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
 								mysql_query($hsql) or die(mysql_error());							
 								
 								$mval = $mval - ($donestocks * $value[$pschedule['symbol']]);
@@ -245,7 +245,7 @@ $sql="select * from bought_stock where id = '$id' and symbol = '{$pschedule['sym
 							if($resultset)
 							{
 								$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-								$hsql = "insert into history values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
+								$hsql = "insert into history  (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
 								mysql_query($hsql) or die(mysql_error());	
 								
 								$shrtval=$shrtval-$donestocks * $bstock['val'];

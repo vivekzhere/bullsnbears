@@ -38,7 +38,7 @@
 			       	
 			       	
 			       	$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-				$hsql = "insert into history values('$tm', '$id', 'c', '{$short['symbol']}', '-1', '{$short['amount']}',  '{$value[$short['symbol']]}', '$mval', '$money')";
+				$hsql = "insert into history (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', 'c', '{$short['symbol']}', '-1', '{$short['amount']}',  '{$value[$short['symbol']]}', '$mval', '$money')";
 				mysql_query($hsql) or die(mysql_error());
 			
 				$sql = "delete from short_sell where id = '$id' and symbol = '".$short['symbol']."' and day = '".$short['day']."'";

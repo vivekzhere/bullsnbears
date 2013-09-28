@@ -20,7 +20,7 @@
 			$mval = $pdetail['market_val'];
 			$money=$pdetail['liq_cash'];
 			$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-			$hsql = "insert into history values('$tm', '".$result['id']."', 's', '".$result['symbol']."', '-1', '".$result['amount']."',  '$price*1.004', '$mval', '$money')";	
+			$hsql = "insert into history (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '".$result['id']."', 's', '".$result['symbol']."', '-1', '".$result['amount']."',  '$price*1.004', '$mval', '$money')";	
 			echo $hsql."<br/>";
 			mysql_query($hsql) or die(mysql_error());
 			
