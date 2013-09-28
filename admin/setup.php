@@ -22,7 +22,7 @@
 			$sql = "CREATE TABLE IF NOT EXISTS `history` (`t_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `p_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
 					`t_type` varchar(2) COLLATE utf8_unicode_ci NOT NULL, `symbol` varchar(20) COLLATE utf8_unicode_ci NOT NULL, 
 					`skey` bigint(20) NOT NULL, `amount` int(11) NOT NULL, `value` decimal(15,2) NOT NULL, `p_mval` int(11) NOT NULL,
-  					`p_liqcash` int(11) NOT NULL, PRIMARY KEY (`skey`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+  					`p_liqcash` int(11) NOT NULL,`slno` bigint(20) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`slno`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 			mysql_query($sql);
 
 			$sql = "CREATE TABLE IF NOT EXISTS `player` (`id` varchar(30) NOT NULL, `name` varchar(40) NOT NULL, `liq_cash` int(11) NOT NULL,
@@ -31,10 +31,10 @@
 			mysql_query($sql);
 
 
-			$sql = "CREATE TABLE IF NOT EXISTS `schedule` (`id` varchar(30) NOT NULL, `symbol` varchar(20) NOT NULL, 
+			$sql = "CREATE TABLE IF NOT EXISTS `schedule` (`id` varchar(30) NOT NULL, `symbol` varchar(20) NOT NULL,
 					`transaction_type` varchar(2) NOT NULL, `scheduled_price` decimal(15,2) NOT NULL, `no_shares` int(11) NOT NULL,
   					`pend_no_shares` int(11) NOT NULL, `flag` char(1) NOT NULL, `skey` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  					PRIMARY KEY (`skey`), UNIQUE KEY `skey` (`skey`) ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=35";
+  					PRIMARY KEY (`skey`)) ENGINE=MyISAM  DEFAULT CHARSET=latin1";
 			mysql_query($sql);
 
 			$sql = "CREATE TABLE IF NOT EXISTS `short_sell` (`id` varchar(30) NOT NULL,
@@ -51,7 +51,7 @@
 
 			$sql = "CREATE TABLE IF NOT EXISTS `symbols` (`name` varchar(100) NOT NULL, `symbol` varchar(20) NOT NULL, PRIMARY KEY (`symbol`) ) ENGINE=MyISAM DEFAULT CHARSET=latin1";
 			mysql_query($sql);
-			echo "Database Tables Succesfully  Added";
+			echo "Database Tables Succesfully  Added<br/><br/>";
 
 
 			//	Populate Database with Top 50 Nifty
@@ -60,18 +60,24 @@
 			$update_time = date('Y-m-d H:i:s', strtotime($jsonobj->{'time'}));
 			foreach($jsonobj->{'data'} as $data)
 			{
-				mysql_query("INSERT INTO `symbols` (`name` , `symbol`) VALUES (\"NotYetAvailable\", \"".substr($data->{'symbol'}, 0, 20)."\" )");
+		        $c = curl_init();
+		        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+			    curl_setopt($c,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+		        curl_setopt($c, CURLOPT_URL, "http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?series=EQ&symbol=".$data->{'symbol'});
+		        $contents = curl_exec($c);
+		        curl_close($c);
+				$symb = json_decode($contents);
+				foreach ($symb->{'data'} as $data2)	$symbname = $data2->{'companyName'};
+				mysql_query("INSERT INTO `symbols` (`name` , `symbol`) VALUES (\"".(string)$symbname."\", \"".substr($data->{'symbol'}, 0, 20)."\" )");
 				mysql_query("INSERT INTO `stockval` (`time_stamp` , `symbol`, `value`, `change`, `change_perc`, `day_low`, `day_high`, `week_low`, `week_high`) VALUES ('$update_time', \"".str_replace(",", "",$data->{'symbol'})."\", \"".str_replace(",", "",$data->{'ltP'})."\", \"".str_replace(",", "",$data->{'ptsC'})."\", \"".str_replace(",", "",$data->{'per'})."\", \"".str_replace(",", "",$data->{'low'})."\", \"".str_replace(",", "",$data->{'high'})."\", \"".str_replace(",", "",$data->{'wklo'})."\", \"".str_replace(",", "",$data->{'wkhi'})."\" )");
 			}
 			echo "Stocks Succesfully Updated.";
-			echo "<a href=\"../index.php\">Index</a>";
+			echo "<br/><br/><a href=\"../index.php\">Index</a>";
+			isset($_SESSION) && session_destroy();
 		}
 		else {
 			header("Location: ../index.php");
 		}
 	}
 
-
-if (!in_array($_SESSION['playerid'], $admins))	echo 'No';
-echo 'Yes';
 ?>
