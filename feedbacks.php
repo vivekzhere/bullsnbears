@@ -1,35 +1,76 @@
 <?php  require_once("includes/global.php");
-if($_SESSION['playerid']!='100001351617375' && $_SESSION['playerid']!='100002423133536' && $_SESSION['playerid']!='100000534273222' && $_SESSION['playerid']!='1042067347' && $_SESSION['playerid']!='100001074618086'  )
-		header("Location: index.php");
-echo "<div id='feedback'>
-	<form action='sendmsg.php' method='POST' id='showform'>
-	<textarea style='resize: none;' name='feedback' cols=80 rows=2 maxlength=300></textarea>
-	<input type='hidden' name='sendflg' value='r' style='float:right; width;30px; height:34' /> <input type='text' name='pid'/>		
-	<input type='submit' name='msgsend' value='Send Feedback' style='float:right; width;30px; height:30px;'/></form></div>";	
-	
-echo "	<table border='1'> 
-	<thead>
-	<tr>
-		<th>Tathva ID</th><th>Message</th><th>Time</th>
-	</tr>
-	</thead>	
-	<tbody>";
-	$sql="select id, message, time_stamp from feedback where flag='S' order by time_stamp desc";
-	$fbs = mysql_query($sql);
-	$out = "";
-	$flag = 0;
-	while($fb = mysql_fetch_array($fbs)){
-			$ids = $fb['id'];
-			$message = $fb['message'];
-			$time = $fb['time_stamp'];
-			$out .= "<tr><td>$ids</td><td>$message</td><td>$time</td></tr>";
-		}
-		echo $out;
-
-	echo "</tbody></table>";	
-	
+	if (!in_array($_SESSION['playerid'], $admins)) header("Location: index.php");
+	metadetails();
 ?>
-	
+<link rel="stylesheet" href="scripts/chosen.min.css">
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+</head>
 
-		
- 
+
+<body>
+<div id="content">
+	<?php navigation("feedback"); ?><br/>
+	<div id="portfolio">
+	
+	<h3>Global Announcement</h3>
+	<div id="announce">
+		<form action='sendmsg.php' method='POST' id='showform'>
+			<textarea style='resize: none;' name='feedback' cols=124 rows=5 maxlength=500></textarea>
+			<input type='hidden' name='sendflg' value='r' style='float:right; width;30px; height:34' />
+			<select data-placeholder="Choose User Id" class="chosen-select" name='pid'>
+				<?php
+					$players = mysql_query("select * from `player`");
+					while ($player = mysql_fetch_array($players)) {
+						echo "<option value=\"".$player['id']."\">".$player['name']."</option>";
+					}
+				?>
+			</select>
+			<input type='submit' name='msgsend' value='Send Feedback' style='float:right; width;30px; height:30px;'/>
+		</form>
+	</div>
+	<br/><br/><br/>
+
+	<h2>Feedback</h2>
+	<br/>
+
+	<table id="feedbackTable" class="tablesorter">
+		<thead><tr>
+		   <th>Sl No.</th>
+		   <th>User</th>
+		   <th>Message</th>
+		   <th>Time</th>
+		</tr></thead>
+		<tbody>
+		<?php			
+		$sql = "select * from `feedback`";
+		$result = mysql_query($sql) or die(mysql_error());
+		while ($transaction = mysql_fetch_array($result)) {
+			$timestamp = $transaction['time_stamp'];
+			$slno = $transaction['slno'];
+			$user = $transaction['id'];
+			$sql = "select `name` from player where id = \"".$user."\"";
+			$user = mysql_query($sql);
+			$user = mysql_result($user, 0, "name");
+			$message = $transaction['message'];
+			$flag = $transaction['flag'];
+			if ($flag == "S") echo "<tr>";
+			else echo "<tr style=\"background: #E9F2BC; \">";
+			echo "<td>{$slno}</td><td>{$user}</td><td>{$message}</td><td>{$timestamp}</td></tr>";
+		}
+		?>
+		</tbody>
+	</table>
+	<br/><br/>
+	</div>
+</div><!--content-->
+
+<script src="scripts/jquery.tablesorter.min.js"></script>
+<script src="scripts/chosen.jquery.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() { $("#feedbackTable").tablesorter(); }  );
+	$(".chosen-select").chosen();
+</script>	
+
+</body>
+</html>

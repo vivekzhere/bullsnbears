@@ -1,4 +1,4 @@
-<?php
+<?php	
 	function clean($value){//mysql_real_escape_string
 		$value = trim($value);
 		$escape = function_exists("mysql_real_escape_string");
@@ -116,10 +116,9 @@
 		<html>
 		<head>
 		  <title>Bulls n' Bears | Tathva '13</title>
-		  <meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\" />
+		  <meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\" >
 		  <meta name=\"description\" content=\"bandb home\" />
 		  <meta name=\"keywords\" content=\"stock simulator\" />
-		  <meta http-equiv=\"content-language\" content=\"en\"/>
 		  <link rel=\"stylesheet\" type=\"text/css\" href=\"stylesheets/global.css\" />
 
 		  <link rel=\"shortcut icon\"  href=\"images/logo.jpg\" />";	
@@ -129,7 +128,7 @@
 		$out= "<div id=\"banner\">
 			<h1>Bulls And Bears</h1>
 		</div><!-- banner -->
-		<div id=\"navigation\">
+		<div>
 			<ul id='navigation'>
 				<li id=\"homebutton\" class=\"";
                                 if($page=="home")
@@ -165,9 +164,15 @@
 				<li class=\"";
 				if($page=="help")
 					$out .="page";
-				$out .="\"><a href=\"help_out.php\">Help</a></li>
-                        
-			<li  id=\"logoutbutton\"><a href=\"logout.php\"><img src = \"../images/logout.png\"> &nbsp; Logout</a></li>
+				$out .="\"><a href=\"help_out.php\">Help</a></li>";
+				$admins = parse_ini_file("config.ini");
+				$admins = explode(' ', $admins['admin_ids']);
+				if (in_array($_SESSION['playerid'], $admins)) {
+					$out .= "<li class=\"";
+					if ($page == "feedback") $out .= "page";
+					$out .= "\"><a href=\"feedbacks.php\">Feedback</a></li>";
+				}
+                $out .= "<li  id=\"logoutbutton\"><a href=\"logout.php\"><img src = \"../images/logout.png\"> &nbsp; Logout</a></li>
 			</ul>
 		</div><!--navigation-->
 		<div id=\"content_main\">";
@@ -175,6 +180,5 @@
 		if( ($page != "markets") && ($page!="lookup") &&($page!="history")  )
 			require("includes/ticker_tape.php");	
 	}
-	
 	
 ?>
