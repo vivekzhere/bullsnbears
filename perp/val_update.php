@@ -6,20 +6,14 @@
 	$mt_d = strtolower(strftime("%A",time())); 
 	if($_GET['key']=="Ti1lLSK65bds")
 	{
-	if(($mt > $start_time ||($mt == $start_time && $mt_m >= $start_time_min)) && $mt_d != "sunday" && $mt_d != "saturday" && ($mt < $end_time || ($mt ==$end_time && $mt_m <= $end_time_min)))
-	{	
-		$sql = "select symbol from symbols";
-		$result = mysql_query($sql);
-		$n = mysql_num_rows($result);
-		//$sql = "select symbols.symbol, a.value from symbols, (select * from stockval order by time_stamp desc limit $n) as a where symbols.symbol = a.symbol";
-		$sql="select stockval.symbol as symbol, value from stockval, (select symbol, max(time_stamp) as lt from stockval group  by symbol)  as u, symbols where stockval.symbol=u.symbol  and stockval.time_stamp=u.lt and stockval.symbol = symbols.symbol order by stockval.symbol";
+		$sql="select `symbol`, `value` from `stockval`";
 		$stocks = mysql_query($sql);
 		$value = array();
 		while($stock = mysql_fetch_array($stocks))
 		{
 			$value[$stock['symbol']] = $stock['value'];
 		}
-		$sql = "select id, liq_cash from player";
+		$sql = "select `id`, `liq_cash` from player";
 		$players = mysql_query($sql) or die(mysql_error());
 		$player = array();
 		while($play = mysql_fetch_assoc($players))
@@ -28,13 +22,13 @@
 		}
 		foreach($player as $id => $liq_cash)
 		{
-			$sql="select * from player where id='$id'";
+			$sql="select * from `player` where `id` ='$id'";
 			$pdetails = mysql_query($sql) or die(mysql_error());
 			$pdetail = mysql_fetch_assoc($pdetails);
 			$shrtval=$pdetail['short_val'];
 			$money=$pdetail['liq_cash'];
 			$mval=$pdetail['market_val'];
-			$sql="select * from schedule where id='$id'";
+			$sql="select * from `schedule` where id='$id'";
 			$pschedules = mysql_query($sql) or die(mysql_error());
 			while($pschedule = mysql_fetch_assoc($pschedules))
 			{
@@ -279,7 +273,6 @@ $sql="select * from bought_stock where id = '$id' and symbol = '{$pschedule['sym
 			$sql = "update player set market_val= {$market_val} where id ='$id'";
 			mysql_query($sql) or die(mysql_error());
 		}
-	}
 	}
 	else
 		header('Location:../home.php');

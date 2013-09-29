@@ -11,12 +11,9 @@
 		echo $update_time;
 		foreach($jsonobj->{'data'} as $data)
 		{	
-			$sql = "SELECT symbol FROM stockval WHERE symbol LIKE '".substr($data->{'symbol'}, 0, 6)."%';";
-			$query = mysql_query($sql);
-			$result = mysql_fetch_object($query);
 			if(str_replace(",", "",$data->{'ltP'})!=0) 
 			{
-				$sql = "UPDATE stockval SET `time_stamp` = '$update_time', `value` = '".str_replace(",", "",$data->{'ltP'})."', `change` = '".str_replace(",", "",$data->{'ptsC'})."', `change_perc` = '".str_replace(",", "",$data->{'per'})."', `day_low` = '".str_replace(",", "",$data->{'low'})."', `day_high` = '".str_replace(",", "",$data->{'high'})."', `week_low` = '".str_replace(",", "",$data->{'wklo'})."', `week_high` = '".str_replace(",", "",$data->{'wkhi'})."' WHERE `symbol` = '{$result->symbol}';";
+				$sql = "UPDATE `stockval` SET `time_stamp` = '$update_time', `value` = '".str_replace(",", "",$data->{'ltP'})."', `change` = '".str_replace(",", "",$data->{'ptsC'})."', `change_perc` = '".str_replace(",", "",$data->{'per'})."', `day_low` = '".str_replace(",", "",$data->{'low'})."', `day_high` = '".str_replace(",", "",$data->{'high'})."', `week_low` = '".str_replace(",", "",$data->{'wklo'})."', `week_high` = '".str_replace(",", "",$data->{'wkhi'})."' WHERE `symbol` = '{$data->{'symbol'}}'";
 				$result=mysql_query($sql) or die(mysql_error());
 			}
 		}
