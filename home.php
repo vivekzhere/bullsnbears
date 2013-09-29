@@ -7,7 +7,7 @@
 <body>
 	<div id="content">
 		<?php navigation("home"); ?>
-		<br/><button id="homerefresh" onclick="updateHome()">Refresh</button>
+		<br/><button id="homerefresh" class="shinybutton" onclick="updateHome()">Refresh</button>
 
 		<div id="home">
 			<div id='details' style='float:left;'>
@@ -44,7 +44,7 @@
 					<li><span class='data_name'>Week's Gain:</span><span class='data'><?php echo addarrow($week_worth);?></span></li>
 				</ul>
 			</div>
-			<div id='nifty'><img style='width: 400px; height: 240px; position: relative; left: -50px;' src='http://chart.finance.yahoo.com/t?s=^NSEI&lang=en-IN&region=IN&width=600&height=360'></div>
+			<div id='nifty'><img style='width: 400px; height: 300px; position: relative; top: 10px;' src='http://chart.finance.yahoo.com/t?s=^NSEI&lang=en-IN&region=IN&width=600&height=360'></div>
 		</div>
 		
 		<div id="feedback">
@@ -57,7 +57,7 @@
 			</div><br/>
 			<form action="" id="showform">
 				<textarea style="resize: none;" id="f" cols=80 rows=2 maxlength=300></textarea>
-				<input type="submit" id="msgsend" value="Send Feedback" style="float:right; width;30px; height:30px;"/>
+				<button id="msgsend" class="shinybutton" style="float:right; width;30px; height:30px;">Send Feedback</button>
 			</form>
 		</div>
 		
@@ -71,6 +71,8 @@
 					$("#home").trigger("update");
 				}
 			});
+			$("#homerefresh").attr('disabled','disabled');
+			setTimeout(function(){$("#homerefresh").removeAttr('disabled')},20000);
 		}
 
 		$("#msgsend").click(function() {
@@ -100,6 +102,6 @@
 
 	</script>
 	<script src="scripts/jquery.pnotify.min.js"></script>
-
+</div>
 </body>
 </html>
