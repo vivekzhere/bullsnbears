@@ -92,7 +92,6 @@ p.wrong, #wrong
 #rankings {
 	margin:-10px auto;
 	max-height:1200px;
-	min-height:1020px;
 }
 
 
@@ -673,7 +672,7 @@ background-image: -ms-linear-gradient(bottom, rgb(184,184,184) 10%, rgb(209,209,
 
 .shinybutton:hover{
   background-color: #62c462;
-  color: #555;
+  color: #fff;
 }
 
 .shinybutton:active{
@@ -696,4 +695,6 @@ background-image: -ms-linear-gradient(bottom, rgb(184,184,184) 10%, rgb(209,209,
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
   text-shadow: none !important;
+}
+ none !important;
 }
