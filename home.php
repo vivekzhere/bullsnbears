@@ -2,7 +2,7 @@
 	if (!isset($_SESSION['username'])) header("Location: index.php");
 	metadetails();
 ?>
-  
+  <link href="scripts/jquery.pnotify.default.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id="content">
@@ -55,9 +55,9 @@
 					echo $result;
 				?>
 			</div><br/>
-			<form action="sendmsg.php" method="POST" id="showform">
-				<textarea style="resize: none;" name="feedback" cols=80 rows=2 maxlength=300></textarea>
-				<input type="submit" name="msgsend" value="Send Feedback" style="float:right; width;30px; height:30px;"/>
+			<form action="" id="showform">
+				<textarea style="resize: none;" id="f" cols=80 rows=2 maxlength=300></textarea>
+				<input type="submit" id="msgsend" value="Send Feedback" style="float:right; width;30px; height:30px;"/>
 			</form>
 		</div>
 		
@@ -72,6 +72,34 @@
 				}
 			});
 		}
+
+		$("#msgsend").click(function() {
+			var feed = $("textarea#f").val();
+			if (feed.length <  5)
+			    	$.pnotify({
+						title: 'Oops!', text: 'Your Message is too Short! Try again.',
+	    				animation: 'show', delay: '3000', type: 'error'
+					});
+			else
+			$.ajax({  
+				type: "POST", url: "sendmsg.php", data: 'feedback='  + $("textarea#f").val() + '&sendflg=S&pid=<?php echo $_SESSION['playerid']; ?>',  
+				success: function() { $.pnotify({
+					title: 'Success!', text: 'Your Feedback has been submitted! Thanks for writing in.',
+    				animation: 'show', delay: '3000', type: 'success'
+					});
+				},
+				error: function() { $.pnotify({
+					title: 'Yipes!', text: 'Your Feedback coudn\'t be submitted! Try again later.',
+    				animation: 'show', delay: '3000', type: 'error'
+					});
+				}  
+			});
+			$("textarea#f").val('');
+			return false;  
+		} );
+
 	</script>
+	<script src="scripts/jquery.pnotify.min.js"></script>
+
 </body>
 </html>
