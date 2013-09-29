@@ -13,9 +13,9 @@
 			$day_worth = $result['day_worth'];
 			$week_worth = $result['week_worth'];
 			$market_val = (int)$result['market_val'];
-			$overall_rank = 'select count(`id`) from `player` where `market_val` + `liq_cash` > '.($liq_cash + $market_val);
+			$overall_rank = 'select count(`id`) from `player` where `rank` <> 0 and `market_val` + `liq_cash` > '.($liq_cash + $market_val);
 			$overall_rank = (mysql_result(mysql_query($overall_rank), 0)) + 1;
-			$weekly_rank = 'select count(`id`) from `player` where `market_val` + `liq_cash` - `week_worth` > '.($liq_cash + $market_val - $week_worth);
+			$weekly_rank = 'select count(`id`) from `player` where `rank` <> 0 and `market_val` + `liq_cash` - `week_worth` > '.($liq_cash + $market_val - $week_worth);
 			$weekly_rank = (mysql_result(mysql_query($weekly_rank), 0)) + 1;
 			$day_worth =  ($liq_cash + $market_val) - $day_worth;
 			$week_worth = ($liq_cash + $market_val)- $week_worth;
