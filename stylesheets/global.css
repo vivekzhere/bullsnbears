@@ -331,8 +331,8 @@ p.wrong, #wrong
 
 #marketsTable > tbody > tr > td > form { display:inline; }
 	
-.formbuy input{float:left; width:34px;}
-.formshort input{float:right; width:38px;}
+.formbuy input{float:left; }
+.formshort input{ float:right; }
 
 #portfolio { text-decoration:none; }
 

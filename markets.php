@@ -8,7 +8,7 @@
 	<div id="content">
 	<?php navigation("markets"); ?>
 		<br/>
-		<button onclick="updateTable()">Refresh</button><br/>
+		<button class="shinybutton" style="position: relative; top: 25px; left: 40px;" onclick="updateTable()">Refresh</button><br/>
 		<div id="markets">
 		</div>
 	</div>
