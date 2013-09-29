@@ -1,7 +1,5 @@
-<?php 
- require_once("includes/global.php");
- if(!isset($_SESSION['username']))
-		header("Location: index.php");
+<?php require_once("includes/global.php");
+ if(!isset($_SESSION['username'])) header("Location: index.php");
   if(isset($_GET['t'])){
 		$t = $_GET['t'];
 	}else{
@@ -9,10 +7,7 @@
 	}
 ?>
 	<div>
-	<form method="get" id="showform" action="portfolio.php"><input type="hidden" value=
-	<?php if($t=="short") echo "bought"; else echo "short"; ?> name="t"/><input type="submit" value=
-	<?php if($t=="short") echo "\"Show bought stock\""; else echo "\"Show shorted stock\"" ?> /></a>
-	</form>
+
 	<h2>	
 	<?php if($t=="short") echo "Shorted"; else echo "Bought"; ?> Stocks</h2>
 <br/>
@@ -22,7 +17,7 @@
 				$tr = 0;
 				if($t != "short"){
 				$out = "";
-				$out = "<table>\n<tr>\n<th>Name</th><th>Amount</th><th>Avg. Bought Price</th><th>Live Price</th><th>Inv. Value</th><th>Latest Value</th><th>Brokerage</th><th>Overall Gain</th><th></th>\n</tr>";
+				$out = "<table id=\"portfolioTable\">\n<tr>\n<th>Name</th><th>Amount</th><th>Avg. Bought Price</th><th>Live Price</th><th>Inv. Value</th><th>Latest Value</th><th>Brokerage</th><th>Overall Gain</th><th></th>\n</tr>";
 				$sql = "select symbols.symbol, name, avg, amount from bought_stock, symbols where symbols.symbol = bought_stock.symbol and id='{$_SESSION['player_id']}'";
 				$resultset = mysql_query($sql) or die(mysql_error());
 				while($result = mysql_fetch_assoc($resultset)){
@@ -81,5 +76,9 @@
 					echo "<p class=\"big\">No Stocks owned</p>";
 				}
 			?>
-			
-			</div>
+			<form method="get" id="showform" action="portfolio.php">
+				<input type="hidden" value=<?php if($t=="short") echo "bought"; else echo "short"; ?> name="t"/>
+				<button style="position:absolute; position: absolute; margin-left: 750px; margin-top: 30px;" class="shinybutton"><?php if($t=="short") echo "Show Bought Stock"; else echo "Show Shorted Stock" ?></button>
+			</form>
+
+		</div>
