@@ -1,4 +1,4 @@
-<div class="tickercontainer">
+<div class="tickercontainer" style="z-index: 10100;">
 	<div id="ticker_tape_content" class="mask">
 		<ul id="ticker" class="newsticker">
  			<?php
