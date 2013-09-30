@@ -2,6 +2,7 @@
 	if(!isset($_SESSION['username'])) header("Location: index.php");
 	echo <<<CONTENT
 		<div>
+			<h2>Market Shares</h2>
 	 		<table id="marketsTable" class="tablesorter"> 
 				<thead>
 					<th>Symbol</th><th>Name</th><th>Price</th><th>Change%</th><th>Day High</th><th>Day Low</th><th>52 Wk High</th><th>52 Wk Low</th>

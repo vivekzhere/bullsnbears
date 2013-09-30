@@ -1,16 +1,12 @@
 <?php require_once("includes/global.php");
  if(!isset($_SESSION['username'])) header("Location: index.php");
-  if(isset($_GET['t'])){
-		$t = $_GET['t'];
-	}else{
-		$t = "buy";
-	}
+  if(isset($_GET['t'])) $t = $_GET['t']; 
+  else $t = "buy";
 ?>
-	<div>
-
-	<h2>	
-	<?php if($t=="short") echo "Shorted"; else echo "Bought"; ?> Stocks</h2>
-<br/>
+<div>
+	<h2><?php if($t=="short") echo "Shorted"; else echo "Bought"; ?> Stocks</h2>
+	<button id="portfolioShow" class="shinybutton" onclick="updatePortfolio('<?php if ($t=="short") echo("bought"); else echo("short"); ?>')">Show <?php if ($t=="short") echo("Bough"); else echo("Shorted"); ?> Stocks</button>
+	<br/>
 <?php
 				$stock_value = present_value();
 				$flag = 0;
@@ -76,9 +72,4 @@
 					echo "<p class=\"big\">No Stocks owned</p>";
 				}
 			?>
-			<form method="get" id="showform" action="portfolio.php">
-				<input type="hidden" value=<?php if($t=="short") echo "bought"; else echo "short"; ?> name="t"/>
-				<button style="position:absolute; position: absolute; margin-left: 750px; margin-top: 30px;" class="shinybutton"><?php if($t=="short") echo "Show Bought Stock"; else echo "Show Shorted Stock" ?></button>
-			</form>
-
 		</div>

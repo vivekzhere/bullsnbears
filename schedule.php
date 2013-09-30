@@ -47,7 +47,7 @@ if(isset($_GET['type'])){
 			  }
 			if(!isset($er_flag)){
 				$form2 = "<div id=\"stocklist\"><form method=\"post\" action=\"schedule.php?type=".$type."\" id=\"showform\">";
-				$form2 .= "\n<label for=\"symbol\"> <select data-placeholder=\"Choose a Stock...\" name=\"symbol\"  style=\"width:200px; text-align:left;\" class=\"chzn-select\">
+				$form2 .= "\n<label for=\"symbol\"> <select data-placeholder=\"Choose a Stock...\" name=\"symbol\"  style=\"width:200px; text-align:left;\" class=\"chosen-select\">
 			<option></option>";
 				$symbol_isset =0;
 				while($ss = mysql_fetch_array($symbol_set)){
@@ -61,7 +61,7 @@ if(isset($_GET['type'])){
 					$form2 .= ">{$s}</option>";
 				}
 				$form2 .="\n</select></label>\n&nbsp;&nbsp;<input type=\"submit\" value=\"$type\" style=\"float:right;\" name=\"Go\"/>
-			<script type=\"text/javascript\"> $(\".chzn-select\").chosen({no_results_text: \"No stocks found\"}).change(updateLookup()); </script>
+			<script type=\"text/javascript\"> $(\".chosen-select\").chosen({no_results_text: \"No stocks found\"}).change(updateLookup()); </script>
 		
 		</form></div>";
 			}
@@ -235,128 +235,8 @@ if(isset($_GET['type'])){
 
 
 <?php metadetails(); ?>
-   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-      <link rel="stylesheet" type="text/css" href="scripts/chosen.css" />
-  <script src="scripts/chosen.jquery.js" type="text/javascript"></script>
-   <script src="scripts/jquery.tablesorter.min.js" type="text/javascript"></script>
-   <script type="text/javascript">
-$(document).ready(function() {
-  if($.browser.msie)
-   {
-     $('#totvalm').hide();
-    }
-
-});
-
-     function displayval(val,num,bal,flag, oprice)
-	{
-	 val = document.getElementById("txtval").value;
-
-
-	 if(isNaN(num*val))
-		{
-		document.getElementById("totval").innerHTML=0;
-		document.getElementById("broker").innerHTML=0;
-		return true;
-		}
-	else
-		{
-		
-		document.getElementById("totval").innerHTML=(num*val*1.002).toFixed(2);
-		document.getElementById("broker").innerHTML=(num*val*0.002).toFixed(2);
-		return true;
-		}
-	
-}
-
-      function isNumberKey(evt,val,max,bal,flag,oprice)
-      {
-         if($.browser.msie)
-         {
-         return true;
-         }
-          
-         var charCode = (evt.which) ? evt.which : event.keyCode
-         if (charCode > 31 && (charCode < 48 || charCode > 57))
-            return false;
-	else
-	{
-	  
-	  var recentChar = String.fromCharCode(evt.which);
-          if(charCode>=48 && charCode<=57) var num = document.getElementById("txtamt").value + recentChar;
-          else if (charCode==8) { var x = document.getElementById("txtamt").value; var num = x.substring(0, x.length-1);}
-           else var num = document.getElementById("txtamt").value ;
-         if(num<=max)
-         {  
-           displayval(val,num,bal,flag,oprice);
-           return true; 
-           }
-         else 
-           return false;
-         }
-      }
-      
-      function displayval2(val)
-	{
-	 var num = document.getElementById("txtamt").value;
-	
-	 if(isNaN(num*val))
-		{
-		document.getElementById("totval").innerHTML=0;
-		document.getElementById("broker").innerHTML=0;
-		return true;
-		}
-	else
-		{
-		
-		document.getElementById("totval").innerHTML=(num*val*1.002).toFixed(2);
-		document.getElementById("broker").innerHTML=(num*val*0.002).toFixed(2);
-		return true;
-		}
-	
-}
-
-      function isValueCorrect(evt,price)
-      {
-         if($.browser.msie)
-         {
-         return true;
-         }
-         
-        var charCode = (evt.which) ? evt.which : event.keyCode
-         if (charCode!=46 && charCode > 31 && (charCode < 48 || charCode > 57))
-            return false;
-         else 
-	{
-	  
-	  var recentChar = String.fromCharCode(evt.which);
-          if((charCode>=48 && charCode<=57) || charCode==46) 
-          	var val = document.getElementById("txtval").value + recentChar;
-          else if (charCode==8) { var x = document.getElementById("txtval").value; var val = x.substring(0, x.length-1);}
-          else 
-           {	var val = document.getElementById("txtval").value ; }
-          
-  	 if(val<=10000)
-         {  	
-            
-           displayval2(val);
-           return true; 
-           }
-         else 
-         {
-           alert("Price must be between 0 and 10000");
-           return false;
-         }
-
-      }
-     }
-</script>
-    <script type="text/javascript">
-   $(document).ready(function() 
-    { 
-        $("#marketsTable").tablesorter(); 
-    } 
-); </script>
+      <link rel="stylesheet" type="text/css" href="scripts/chosen.min.css" />
+ 
 </head>
 <body>
 <div id="content">
@@ -421,7 +301,7 @@ $(document).ready(function() {
 		echo "<h2>Schedule Details</h2>";
 		$flag=0;
 		$out = "";
-		$out = "<table id=\"scheduletable\">\n<tr>\n<th>Symbol</th><th>Name</th><th>Transaction</th><th>Scheduled Price</th><th>Current Price</th><th>Amount</th><th>Pending</th><th>Status</th><th></th>\n</tr>";
+		$out = "<table id=\"scheduleTable\">\n<tr>\n<th>Symbol</th><th>Name</th><th>Transaction</th><th>Scheduled Price</th><th>Current Price</th><th>Amount</th><th>Pending</th><th>Status</th><th></th>\n</tr>";
 		$sql="select schedule.id,schedule.symbol,transaction_type,scheduled_price,no_shares,pend_no_shares, symbols.name,skey from schedule,symbols where schedule.symbol=symbols.symbol and schedule.id='{$_SESSION['player_id']}'";
 		$resultset = mysql_query($sql) or die(mysql_error());
 		while($result = mysql_fetch_assoc($resultset))
@@ -498,5 +378,107 @@ $(document).ready(function() {
 	
 	
 	</div><!-- content_main -->
+	 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+   <script src="scripts/jquery.tablesorter.min.js"></script>
+   <script type="text/javascript">
+     function displayval(val,num,bal,flag, oprice)
+	{
+	 val = document.getElementById("txtval").value;
+
+
+	 if(isNaN(num*val))
+		{
+		document.getElementById("totval").innerHTML=0;
+		document.getElementById("broker").innerHTML=0;
+		return true;
+		}
+	else
+		{
+		
+		document.getElementById("totval").innerHTML=(num*val*1.002).toFixed(2);
+		document.getElementById("broker").innerHTML=(num*val*0.002).toFixed(2);
+		return true;
+		}
+	
+}
+
+      function isNumberKey(evt,val,max,bal,flag,oprice)
+      {
+         var charCode = (evt.which) ? evt.which : event.keyCode
+         if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+	else
+	{
+	  
+	  var recentChar = String.fromCharCode(evt.which);
+          if(charCode>=48 && charCode<=57) var num = document.getElementById("txtamt").value + recentChar;
+          else if (charCode==8) { var x = document.getElementById("txtamt").value; var num = x.substring(0, x.length-1);}
+           else var num = document.getElementById("txtamt").value ;
+         if(num<=max)
+         {  
+           displayval(val,num,bal,flag,oprice);
+           return true; 
+           }
+         else 
+           return false;
+         }
+      }
+      
+      function displayval2(val)
+	{
+	 var num = document.getElementById("txtamt").value;
+	
+	 if(isNaN(num*val))
+		{
+		document.getElementById("totval").innerHTML=0;
+		document.getElementById("broker").innerHTML=0;
+		return true;
+		}
+	else
+		{
+		
+		document.getElementById("totval").innerHTML=(num*val*1.002).toFixed(2);
+		document.getElementById("broker").innerHTML=(num*val*0.002).toFixed(2);
+		return true;
+		}
+	
+}
+
+      function isValueCorrect(evt,price)
+      {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+         if (charCode!=46 && charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+         else 
+	{
+	  
+	  var recentChar = String.fromCharCode(evt.which);
+          if((charCode>=48 && charCode<=57) || charCode==46) 
+          	var val = document.getElementById("txtval").value + recentChar;
+          else if (charCode==8) { var x = document.getElementById("txtval").value; var val = x.substring(0, x.length-1);}
+          else 
+           {	var val = document.getElementById("txtval").value ; }
+          
+  	 if(val<=10000)
+         {  	
+            
+           displayval2(val);
+           return true; 
+           }
+         else 
+         {
+           alert("Price must be between 0 and 10000");
+           return false;
+         }
+
+      }
+     }
+</script>
+    <script type="text/javascript">
+   $(document).ready(function() 
+    { 
+        $("#marketsTable").tablesorter(); 
+    } 
+); </script>
 </div><!--content-->
 </body>

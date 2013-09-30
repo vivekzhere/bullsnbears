@@ -10,7 +10,7 @@
 		<br/><button id="homerefresh" class="shinybutton" onclick="updateHome()">Refresh</button>
 
 		<div id="home">
-			<div id='details' style='float:left;'>
+			<div id='details'>
 				<?php
 					$name = $_SESSION['name'];
 					$username = $_SESSION['username'];
@@ -44,35 +44,42 @@
 					<li><span class='data_name'>Week's Gain:</span><span class='data'><?php echo addarrow($week_worth);?></span></li>
 				</ul>
 			</div>
-			<div id='nifty'><img style='width: 400px; height: 300px; position: relative; top: 10px;' src='http://chart.finance.yahoo.com/t?s=^NSEI&lang=en-IN&region=IN&width=600&height=360'></div>
+			<div id='nifty'><img id='niftychart' src='http://chart.finance.yahoo.com/t?s=^NSEI&lang=en-IN&region=IN&width=600&height=360'></div>
 		</div>
-		
+
 		<div id="feedback">
-			<div id="adminmsg" ><b>Bulls n' Bears</b>:
-				<?php
-					$sql = 'SELECT `message` from `feedback` where `flag` = "R" order by `time_stamp` desc limit 1';
-					$result = mysql_result(mysql_query($sql), 0);
-					echo $result;
-				?>
-			</div><br/>
+				<div id="adminmsg"><b>Bulls n' Bears</b>:
+					<?php
+						$sql = 'SELECT `message` from `feedback` where `flag` = "R" order by `time_stamp` desc limit 1';
+						$result = mysql_result(mysql_query($sql), 0);
+						echo $result;
+					?>
+				</div><br/>
 			<form action="" id="showform">
 				<textarea style="resize: none;" id="f" cols=80 rows=2 maxlength=300></textarea>
-				<button id="msgsend" class="shinybutton" style="float:right; width;30px; height:30px;">Send Feedback</button>
+				<button id="msgsend" class="shinybutton">Send Feedback</button>
 			</form>
 		</div>
-		
 	</div>
+</div>
+
 	<script type="text/javascript">
 		function updateHome() { 
 			$.ajax({ url: 'updatehome.php',
 				dataType: 'HTML', 
 				success: function(data, status, xhr){
-					$('#home').html($(data).html());
-					$("#home").trigger("update");
+					$('#details').html($(data).html());
+					$("#details").trigger("update");
+					$.pnotify({ title: 'Success!', text: 'Succesfully Refreshed! You can refresh again after 30s.', animation: 'show',
+						delay: '3000', type: 'success' });
+				},
+				failure: function() { $.pnotify({ title: 'Uh Oh!', text: 'Refresh failed! Try again later.', animation: 'show',
+					delay: '3000', type: 'error'  });
 				}
 			});
 			$("#homerefresh").attr('disabled','disabled');
-			setTimeout(function(){$("#homerefresh").removeAttr('disabled')},20000);
+			setTimeout(function(){$("#homerefresh").removeAttr('disabled')},30000);
+
 		}
 
 		$("#msgsend").click(function() {
@@ -91,7 +98,7 @@
 					});
 				},
 				error: function() { $.pnotify({
-					title: 'Yipes!', text: 'Your Feedback coudn\'t be submitted! Try again later.',
+					title: 'Uh Oh!', text: 'Your Feedback coudn\'t be submitted! Try again later.',
     				animation: 'show', delay: '3000', type: 'error'
 					});
 				}  
@@ -99,9 +106,9 @@
 			$("textarea#f").val('');
 			return false;  
 		} );
-
 	</script>
 	<script src="scripts/jquery.pnotify.min.js"></script>
-</div>
+
+	<form id="test" style="visibility: hidden;"><div class="fb-like" data-href="http://www.facebook.com/bullsnbearscommunity" data-width="100" data-layout="button_count" data-show-faces="false" data-send="false"></div></form>
 </body>
 </html>
