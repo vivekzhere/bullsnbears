@@ -79,7 +79,7 @@
 
 	
 	function convertcash($num, $currency){
-		$currency = "Rs. ";
+		$currency = "&#8377; ";
 		if (strlen($num) > 3) {
 			$lastthree = substr($num, strlen($num)-3, strlen($num));
 			$restunits = substr($num, 0, strlen($num)-3); // extracts the last three digits
@@ -105,7 +105,7 @@
 	function metadetails(){
 		echo <<<CONTENT
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>Bulls n' Bears | Tathva '13</title>
 	<meta charset="UTF-8">
@@ -118,9 +118,7 @@ CONTENT;
 	function navigation($page){
 
 		$out= <<<CONTENT
-			<div id="banner">
-				<h1>Bulls And Bears</h1>
-			</div>
+			<div id="banner"></div>
 			<div>
 				<ul id="navigation">
 CONTENT;
