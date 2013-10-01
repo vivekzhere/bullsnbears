@@ -2,7 +2,7 @@
 	<div id="ticker_tape_content" class="mask">
 		<ul id="ticker" class="newsticker">
  			<?php
-				$sql = "select `symbol`, `value`, `change` from `stockval` order by `time_stamp` desc";
+				$sql = "select `symbol`, `value`, `change` from `stockval` order by `symbol`";
 				$stocks = mysql_query($sql);
 				$out = "";
 				while ($stock = mysql_fetch_array($stocks)) {
