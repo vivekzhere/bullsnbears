@@ -36,7 +36,7 @@
 				$out .= "</table>";
 				}
 				if($t == "short"){
-				$out = "<table>\n<tr>\n<th>Name</th><th>Amount</th><th>Avg. sold Price</th><th>Live Price</th><th>Total Sold Value</th><th>Brokerage</th><th>Profit</th><th></th>\n</tr>";
+				$out = "<tablee id=\"portfolioTable\">\n<tr>\n<th>Name</th><th>Amount</th><th>Avg. sold Price</th><th>Live Price</th><th>Total Sold Value</th><th>Brokerage</th><th>Profit</th><th></th>\n</tr>";
 				$sql = "select short_sell.symbol, name, amount, val, day from short_sell, symbols where symbols.symbol = short_sell.symbol and id='{$_SESSION['player_id']}' order by short_sell.symbol, day asc";
 				$resultset = mysql_query($sql) or die(mysql_error());
 				$checkarray = array();
