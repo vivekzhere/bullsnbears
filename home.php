@@ -108,7 +108,5 @@
 		} );
 	</script>
 	<script src="scripts/jquery.pnotify.min.js"></script>
-
-	<form id="test" style="visibility: hidden;"><div class="fb-like" data-href="http://www.facebook.com/bullsnbearscommunity" data-width="100" data-layout="button_count" data-show-faces="false" data-send="false"></div></form>
 </body>
 </html>
