@@ -5,7 +5,7 @@
 ?>
 <div>
 	<h2><?php if($t=="short") echo "Shorted"; else echo "Bought"; ?> Stocks</h2>
-	<button id="portfolioShow" class="shinybutton" onclick="updatePortfolio('<?php if ($t=="short") echo("bought"); else echo("short"); ?>')">Show <?php if ($t=="short") echo("Bough"); else echo("Shorted"); ?> Stocks</button>
+	<button id="portfolioShow" class="shinybutton" onclick="updatePortfolio('<?php if ($t=="short") echo("bought"); else echo("short"); ?>')">Show <?php if ($t=="short") echo("Bought"); else echo("Shorted"); ?> Stocks</button>
 	<br/>
 <?php
 				$stock_value = present_value();
