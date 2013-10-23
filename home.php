@@ -2,7 +2,7 @@
 require_once("includes/global.php");		
 
 	if (session_id() == '') session_start();
-	if (!(isset($_GET['key']) && $_GET['key'] == 'M1112AER') && !(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
+	if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
 		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") && die();
 		elseif (!isset($_SESSION['id'])) header("Location: index.php") && die();
 	}
@@ -30,7 +30,7 @@ require_once("includes/global.php");
 	metadetails();
 ?>
 </head>
-<body>
+<body onload="document.getElementById('feedbacksubmit').hidden = true;">
 	<div id="banner"></div>
 	<?php Menu(); ?>
 	<div id="content">
@@ -44,14 +44,20 @@ require_once("includes/global.php");
 			<br/>
 			<ul>
 				<li><div id="networth" class="button btn-red"><span style="width: 100%; display: block; text-align:center;">Net Worth</span><span style="width: 100%; text-align:center; display: block;"><?php echo ininr($liq_cash+$market_val); ?></span></div></li>
-			<br/>
+				<br/>
 				<li><span class='data_name'>Today's Gain:</span><span class='data'><?php echo addarrow($day_worth);?></span></li>
 				<li><span class='data_name'>Week's Gain:</span><span class='data'><?php echo addarrow($week_worth);?></span></li>
 			</ul>
 		</div>
 		<div id="niftychart"></div>
-		<button id="Refresh" class="button btn-green" onclick="AjaxGet('updatehome.php', 'Stats');">Refresh</button>
+		<button id="Refresh" class="button btn-green" onclick="AjaxPost('updatehome.php', 'Stats', '');">Refresh</button>
+		<form id="feedbackform" onsubmit="return false;">
+  			<fieldset>
+    			<input type="text" id="feedbackmsg" onchange="if (this.value.length > 5) document.getElementById('feedbacksubmit').hidden = false; else document.getElementById('feedbacksubmit').hidden = true;" class="form-text"  style="left: 5%; height: 1.5em;" placeholder="Would you like to give us a lil feedback ? Latest News & Hints available on our Facebook Page!">
+				<button id="feedbacksubmit" onclick="AjaxPost('sendmsg.php', 'feedbackmsg', 'msg=' + document.getElementById('feedbackmsg').value);" style="height: 1.5em;" class="button btn-green" >Submit</button>
+  			</fieldset>
+		</form>
 	</div>
-	<?php require_once("includes/ticker.php"); AjaxGet(); ?>
+	<?php require_once("includes/ticker.php"); AjaxPost(); Load_Anim(); ?>
 </body>
 </html>

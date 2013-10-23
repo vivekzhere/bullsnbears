@@ -1,5 +1,6 @@
 @import "compass/reset";
 @import "layout";
+@import "load";
 
 #content {
 	position: absolute;
@@ -142,7 +143,7 @@
 	background-image: -webkit-linear-gradient(left , rgb(229,245,223) 19%, rgb(202,209,204) 60%);
 	background-image: -ms-linear-gradient(left , rgb(229,245,223) 19%, rgb(202,209,204) 60%);
 	background-image: -webkit-gradient( linear, left bottom, right bottom, color-stop(0.19, rgb(229,245,223)), color-stop(0.6, rgb(202,209,204)));
-	transition: font-size 0.2s;
+	transition: font-size 0.3s;
 	&:hover {
 		background-image: linear-gradient(left , rgb(94,217,46) 19%, rgb(32,191,75) 60%);
 		background-image: -o-linear-gradient(left , rgb(94,217,46) 19%, rgb(32,191,75) 60%);
@@ -151,6 +152,7 @@
 		background-image: -ms-linear-gradient(left , rgb(94,217,46) 19%, rgb(32,191,75) 60%);
 		background-image: -webkit-gradient(linear, left bottom, right bottom, color-stop(0.19, rgb(94,217,46)), color-stop(0.6, rgb(32,191,75)));
 		font-size: 1.4em;
+		color: #fff;
 		cursor: pointer;
 	}
 }
@@ -245,6 +247,10 @@
 	-ms-transition: background 0.4s ease-out; 
 	-o-transition: background 0.4s ease-out;
 	transition: background 0.4s ease-out;
+	border-radius: 3px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+
 	&:hover {
 		cursor: pointer;
 	}
@@ -272,6 +278,31 @@
 	width: 200px;
 }
 
+#feedbackform {
+	position: absolute;
+	bottom: 5%;
+	width: 90%;
+	left: 5%;
+
+}
+
+.form-text {
+	border: none;
+	transition: 0.5s;
+	border-radius: 5px;
+	@include stylebg;
+	&:hover {
+		background: #ccffcf;
+	}
+	&:focus {
+		background: #ccffcf;
+	}
+}
+
+#feedbackmsg {
+	width: 90%;
+}
+
 @media screen and (min-device-width: 320px) and (max-device-width: 440px)	{
 	#niftychart, #ticker {
 		display: none;
@@ -284,6 +315,12 @@
 	#Stats {
 		width: 90%;
 		margin-left: 5%;
+	}
+	#feedbackform {
+		bottom: 3px;
+	}
+	#feedbackmsg {
+		width: 70%;
 	}
 	.data_name { margin-left: 2em; 	}
 	.data { margin-right: 2em; }

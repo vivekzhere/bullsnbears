@@ -88,3 +88,9 @@ body {
 	from	{ top:-200px; }
 	to		{ top:0px; }
 }
+
+@media screen and (min-device-width: 320px) and (max-device-width: 440px)	{
+	#banner {
+		width: 100%;
+	}
+}

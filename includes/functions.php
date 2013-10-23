@@ -2,8 +2,8 @@
 require_once("includes/config.php");
 	//	Add Arrow based on Negative or Positibe.
 	function addarrow($value){
-		if ($value >= 0) $out = '<img src="images/up_g.gif" width="10px" height="14px" /> <span style="color:green;">';
-		elseif ($value < 0)	$out = '<img src="images/down_r.gif" width="10px" height="14px" /> <span style="color:red;">';
+		if ($value >= 0) $out = '<img src="images/up_g.gif" width="10" height="14" alt="up" /> <span style="color:green;">';
+		elseif ($value < 0)	$out = '<img src="images/down_r.gif" width="10px" height="14px" alt="down" /> <span style="color:red;">';
 		$value = $out.number_format(abs($value),2,'.','').'</span>';
 		return $value;
 	}
@@ -82,19 +82,57 @@ CONTENT;
 		echo <<<CONTENT
 		<script>
 			function AjaxGet(a, b) {
+				load = document.getElementById('loadOverlay');
+				load.style.display = 'block';
 				Req = new XMLHttpRequest();
 				Req.onreadystatechange = function()
-				{	if (Req.readyState == 4 && (Req.status == 200 || Req.status == 304)) {
-						if (Req.responseText != "failed!") document.getElementById(b).innerHTML = Req.responseText;
-						else alert("Failed!");
+				{	if (Req.readyState == 4) {
+						load.style.display = 'none';					
+						if (Req.status == 200 || Req.status == 304) {
+							if (Req.responseText != "failed!") document.getElementById(b).innerHTML = Req.responseText;
+							else alert("Failed!");
+						} else alert("Failed!");
 					}
-					else if (Req.readyState == 4) alert("Failed!");
   				}
 				Req.open("GET", a, true);
 				Req.send();
 			}
 		</script>
 CONTENT;
-
 	}
+
+
+	function AjaxPost() {
+		echo <<<CONTENT
+		<script>
+			function AjaxPost(a, b, c) {
+				load = document.getElementById('loadOverlay');
+				load.style.display = 'block';
+				Req = new XMLHttpRequest();
+				Req.onreadystatechange = function()
+				{	if (Req.readyState == 4) {
+						load.style.display = 'none';					
+						if (Req.status == 200 || Req.status == 304) {
+							if (Req.responseText != "failed!") { document.getElementById(b).innerHTML = Req.responseText; document.getElementById(b).value = Req.responseText; }
+							else alert("Failed!");
+						} else alert("Failed!");
+					}
+  				}
+				Req.open("POST", a, true);
+				Req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				Req.send(c);
+			}
+		</script>
+CONTENT;
+	}
+
+	function Load_Anim() {
+		echo <<<CONTENT
+	<div id="loadOverlay"><div id="circularG"><div id="circularG_1" class="circularG"></div><div id="circularG_2" class="circularG"></div>
+	<div id="circularG_3" class="circularG"></div><div id="circularG_4" class="circularG"></div><div id="circularG_5" class="circularG"></div>
+	<div id="circularG_6" class="circularG"></div>	<div id="circularG_7" class="circularG"></div><div id="circularG_8" class="circularG"></div>
+	</div></div>
+CONTENT;
+	}
+
 ?>

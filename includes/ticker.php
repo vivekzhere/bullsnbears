@@ -1,7 +1,7 @@
 <?php
 require_once("connection.php");
 	echo <<<CONTENT
-		<div id="ticker" style="height: 25px;" onclick="ToggleTicker();"><marquee onmouseleave="document.getElementById('ticker-text').start();" onmouseover="document.getElementById('ticker-text').stop();" id="ticker-text"><ul style="float: left; margin: 0; padding-right: 15px;">
+		<div id="ticker" style="height: 25px;" onclick="ToggleTicker();"><marquee onmouseleave="this.start();" onmouseover="this.stop();" id="ticker-text"><ul style="float: left; margin: 0; padding-right: 15px;">
 CONTENT;
 	$sql = "select `symbol`, `value`, `change` from `stocks` order by `symbol`";
 	$stocks = $mysqli->query($sql);
