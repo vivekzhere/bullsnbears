@@ -1,75 +1,53 @@
-<?php require_once("includes/global.php");
- if(!isset($_SESSION['username'])) header("Location: index.php");
-  if(isset($_GET['t'])) $t = $_GET['t']; 
-  else $t = "buy";
-?>
-<div>
-	<h2><?php if($t=="short") echo "Shorted"; else echo "Bought"; ?> Stocks</h2>
-	<button id="portfolioShow" class="shinybutton" onclick="updatePortfolio('<?php if ($t=="short") echo("bought"); else echo("short"); ?>')">Show <?php if ($t=="short") echo("Bought"); else echo("Shorted"); ?> Stocks</button>
-	<br/>
 <?php
-				$stock_value = present_value();
-				$flag = 0;
-				$tr = 0;
-				if($t != "short"){
-				$out = "";
-				$out = "<table id=\"portfolioTable\">\n<tr>\n<th>Name</th><th>Amount</th><th>Avg. Bought Price</th><th>Live Price</th><th>Inv. Value</th><th>Latest Value</th><th>Brokerage</th><th>Overall Gain</th><th></th>\n</tr>";
-				$sql = "select symbols.symbol, name, avg, amount from bought_stock, symbols where symbols.symbol = bought_stock.symbol and id='{$_SESSION['player_id']}'";
-				$resultset = mysql_query($sql) or die(mysql_error());
-				while($result = mysql_fetch_assoc($resultset)){
-					$flag = 1;
-					$symbol = $result['symbol'];
-					$out .= "<tr onclick=\"window.location.href='lookup.php?symbol=".$result['symbol']."'\"";
-					if($tr == 0){
-						$out .= " class=\"altr\"";
-						$tr = 1;
-					}else{
-						$tr = 0;
-					}
-					$out .= ">\n";
-					//foreach($result as $r){
-						$out .= "<td>{$result['name']}</td><td>{$result['amount']}</td><td>{$result['avg']}</td><td>{$stock_value[$symbol]}</td>";
-					//}
-					$out .= "<td>".number_format($result['avg']*$result['amount'],2,'.','')."   </td><td>".number_format($stock_value[$symbol]*$result['amount'],2,'.','')."</td><td>".number_format($result['avg']*$result['amount']*0.002,2,'.','')."</td><td>".addarrow(($stock_value[$symbol]*$result['amount']-$result['avg']*$result['amount']-$result['avg']*$result['amount']*0.002))."</td><td><form method=\"post\" action=\"trade.php?type=Sell\"><input type=\"hidden\" name=\"symbol\" value=\"{$symbol}\"><input type=\"submit\" value=\"Sell\"></form></td>";
-					$out .= "\n</tr>\n";
-				}
-				$out .= "</table>";
-				}
-				if($t == "short"){
-				$out = "<tablee id=\"portfolioTable\">\n<tr>\n<th>Name</th><th>Amount</th><th>Avg. sold Price</th><th>Live Price</th><th>Total Sold Value</th><th>Brokerage</th><th>Profit</th><th></th>\n</tr>";
-				$sql = "select short_sell.symbol, name, amount, val, day from short_sell, symbols where symbols.symbol = short_sell.symbol and id='{$_SESSION['player_id']}' order by short_sell.symbol, day asc";
-				$resultset = mysql_query($sql) or die(mysql_error());
-				$checkarray = array();
-				while($result = mysql_fetch_assoc($resultset)){
-					$flag = 1;
-					$symbol = $result['symbol'];
-					if(isset($checkarray[$symbol]))
-					$checkarray[$symbol] += 1;
-					else
-					$checkarray[$symbol] = 1;
-					$out .= "\t\t\t<tr onclick=\"window.location.href='lookup.php?symbol=".$result['symbol']."'\"";
-					if($tr == 0){
-						$out .= " class=\"altr\"";
-						$tr = 1;
-					}else{
-						$tr = 0;
-					}
-					$out .= ">\n\t\t\t\t";
-					//foreach($result as $r){
-						$out .= "<td>{$result['name']}</td><td>{$result['amount']}</td><td>{$result['val']}</td><td>{$stock_value[$symbol]}</td>";
-					//}
-					if($checkarray[$symbol] == 1)
-					$out .= "<td>". number_format( $result['amount']*$result['val'],2,'.','')."</td><td>".number_format( $result['amount']*$result['val']*0.002,2,'.','')."</td><td>". addarrow( ($result['val'] - $stock_value[$symbol])*$result['amount']-($result['val']*$result['amount']*0.002))."</td><td><form method=\"post\" action=\"trade.php?type=Cover\"><input type=\"hidden\" name=\"symbol\" value=\"{$symbol}\"><input type=\"submit\" value=\"Cover\"></form></td>";
-					else
-					$out .= "<td></td><td></td>";
-					$out .= "\n\t\t\t</tr>\n";
-				}
-				$out .= "</table>";
-				}
-				if($flag == 1){
-					echo $out;
-				}else{
-					echo "<p class=\"big\">No Stocks owned</p>";
-				}
-			?>
-		</div>
+require_once("includes/global.php");
+	if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") && die();
+		elseif (!isset($_SESSION['id'])) header("Location: index.php") && die();
+	}
+	$t = ($_GET['t'] == "Shorted")? "Shorted" : "Bought";
+	if ($t == 'Bought') {
+		echo "<h2 align='center'>Bought Stocks</h2>";
+		echo '<div style="height: 20px"><button id="showother" style="float: right; margin-left: 0; border-radius: 0px 10px 10px 0px;" class="button btn-green" onclick="updatePortfolio(\'Shorted\', \'NULL\')">Show Shorted Stocks</button>';
+		echo '<button id="portfoliorefresh" style="float: right; margin-right: 0; border-right: 3px solid #ccc; border-radius: 10px 0px 0px 10px;" class="button btn-green" onclick="updatePortfolio(\'Bought\')">Refresh</button></div>';
+		$results = $mysqli->query("SELECT b.`id`, b.`symbol`, b.`amount`, b.`avg`, s.`name`, s.`value` FROM `bought_stock` b, `stocks` s WHERE b.`symbol` = s.`symbol` AND b.`id` = '{$_SESSION['id']}';");
+		if ($results->num_rows == 0) echo "You dont have any Bought stocks!";
+		else {
+?>
+	<table id="portfolioTable">		
+		<thead><tr>
+			<th>Name</th><th>Amount</th><th>Avg. Bought Price</th><th>Live Price</th><th>Inv. Value</th><th>Latest Value</th><th>Brokerage</th><th>Overall Gain</th><th></th>
+		</tr></thead>
+		<tbody>
+		<?php
+			while ($result = $results->fetch_assoc()) {
+				echo "<tr><td>{$result['name']}</td><td>{$result['amount']}</td><td>{$result['avg']}</td><td>{$result['value']}</td><td>".number_format($result['avg'] * $result['amount'], 2, '.', '')."</td><td>".number_format($result['value'] * $result['amount'], 2, '.', '')."</td><td>".number_format($result['avg'] * $result['amount'] * 0.002, 2, '.', '')."</td><td>".addarrow(number_format((($result['value'] * 0.998) - ($result['avg'] * 1.002)) * $result['amount'], 2, '.', ''))."</td><td onclick=\"window.location.href = 'trade.php?op=sell&stock={$result['symbol']}'\" class='btn-red'>Sell</td></tr>";
+			}
+		?>
+		</tbody>
+	</table>
+<?php
+		} 
+	} else {
+		echo "<h2 align='center'>Shorted Stocks</h2>";
+		echo '<div style="height: 20px"><button id="showother" style="float: right; margin-left: 0; border-radius: 0px 10px 10px 0px;" class="button btn-green" onclick="updatePortfolio(\'Bought\', \'NULL\')">Show Bought Stocks</button>';
+		echo '<button id="portfoliorefresh" style="float: right; margin-right: 0; border-right: 3px solid #ccc; border-radius: 10px 0px 0px 10px;" class="button btn-green" onclick="updatePortfolio(\'Shorted\')">Refresh</button></div>';
+		$results = $mysqli->query("SELECT b.`id`, b.`symbol`, b.`amount`, b.`val`, s.`name`, s.`value` FROM `short_sell` b, `stocks` s WHERE b.`symbol` = s.`symbol` AND b.`id` = '{$_SESSION['id']}';");
+		if ($results->num_rows == 0) echo "You dont have any Bought stocks!";
+		else {
+		?>
+	<table id="portfolioTable">		
+		<thead><tr>
+			<th>Name</th><th>Amount</th><th>Avg. Sold Price</th><th>Live Price</th><th>Total Sold Value</th><th>Brokerage</th><th>Profit</th><th></th>		
+		</tr></thead>
+		<tbody>
+		<?php
+			while ($result = $results->fetch_assoc()) {
+				echo "<tr><td>{$result['name']}</td><td>{$result['amount']}</td><td>{$result['val']}</td><td>{$result['value']}</td><td>".number_format($result['val'] * $result['amount'], 2, '.', '')."</td><td>".number_format($result['val'] * $result['amount'] * 0.02, 2, '.', '')."</td><td>".addarrow(number_format((($result['value'] * 0.998) - ($result['val'] * 1.002)) * $result['amount'], 2, '.', ''))."</td><td onclick=\"window.location.href = 'trade.php?op=cover&stock={$result['symbol']}'\" class='btn-red'>Cover</td></tr>";
+			}
+		?>
+		</tbody>
+	</table>
+		<?php
+		}
+	}
+?>
