@@ -1,36 +1,28 @@
-<?php 
- require_once("includes/global.php");
-	if(!isset($_SESSION['username']))	header("Location: index.php");
+<?php require_once("includes/global.php");
+if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") && die();
+		elseif (!isset($_SESSION['id'])) header("Location: index.php") && die();
+	}
 	metadetails();
+	$results = $mysqli->query("SELECT `t_time`, `symbol`, `t_type`, `amount`, `value` from `history` WHERE `p_id` = '{$_SESSION['id']}' ORDER BY `t_time` DESC LIMIT 100");
 ?>
-<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 </head>
-
-
 <body>
-<div id="content">
-	<?php navigation("history"); ?>
-	 <br/>
-	<div id="portfolio">
+	<div id="banner"></div>
+	<?php Menu(); ?>
+	<div id="content">
+		<h2 align="center">Transaction History</h2>
+		<?php 
+		if ($results->num_rows != 0)  {
+		?>
+		<br/><br/><table id="historyTable">
+			<thead><tr>
+				<th>Time</th><th>Type</th><th>Stock</th><th>Amount</th><th>Stock Price</th><th>Value</th><th>Brokerage</th>
+			</tr></thead>
+			<tbody>
+<?php			
 	
-	<h2>Transaction History</h2>
-	<br/>
-	<?php
-		echo "<table id=\"marketsTable\" class=\"tablesorter\">
-				<thead>
-					<th>Time</th>
-					<th>Type</th>
-					<th>Symbol</th>
-					<th>Amount</th>
-					<th>Value</th>
-					<th>Total</th>
-					<th>Brokerage</th>
-			  </thead>
-			<tbody>";
-			
-	$sql = "select * from history where p_id = '{$_SESSION['player_id']}' order by t_time desc limit 100";
-	$result = mysql_query($sql) or die(mysql_error());
-	while ($transaction = mysql_fetch_array($result)) {
+	while ($transaction = $results->fetch_assoc()) {
 		$t_time = $transaction['t_time'];
 		$t_time = date('j-M  H:i', strtotime($t_time));
 		$t_type = $transaction['t_type'];
@@ -43,27 +35,20 @@
 		else
 			$t_type = 'Short Sell';			
 		$symbol = $transaction['symbol'];
-								
 		$amount = $transaction['amount'];
 		$value = $transaction['value'];
 		$total = number_format($value*$amount, 2, '.', '');
-				$brokerage = number_format(0.002*$total, 2, '.', '');
-		
+		$brokerage = number_format(0.002*$total, 2, '.', '');
 		echo "<tr><td>{$t_time}</td><td>{$t_type}</td><td>{$symbol}</td><td>{$amount}</td><td>{$value}</td><td>{$total}</td><td>{$brokerage}</td></tr>";
-		}
-		
-	echo "</tbody></table><br/><br/>";
-
-?>
+	}
+?>	
+			</tbody>
+		</table>
+		<?php
+			} else echo "<br/><br/><div style='text-align: center;'>No Records Found.</div>";
+		?>
+		<br/><br/>
 	</div>
-	
-	</div><!-- content_main -->
-</div><!--content-->
-
-<script src="scripts/jquery.tablesorter.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-$(document).ready(function() {	$("#marketsTable").tablesorter();	} ); 
-</script>	
-
+	<?php require_once("includes/ticker.php"); ?>
 </body>
 </html>
