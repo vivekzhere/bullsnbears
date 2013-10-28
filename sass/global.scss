@@ -375,11 +375,22 @@ th {
 	);
 }
 
-#td-sell {
-	&:hover {
-		cursor: pointer;
-	}
+tr:hover {
+	cursor: pointer;
 }
+
+#td-sell {
+	border-right: 0;
+}
+
+#marketsTable {
+	left: 0;
+	right: 0;
+	margin: auto;
+	position: absolute;
+	width: 95%;
+}
+
 @media screen and (min-device-width: 320px) and (max-device-width: 440px)	{
 	#niftychart, #ticker {
 		display: none;
