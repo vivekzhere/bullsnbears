@@ -7,7 +7,8 @@
 	$results = $mysqli->query("SELECT * FROM `stocks` ORDER BY `symbol` ASC");
 	echo "<h2 align='center'>Market</h2>";
 ?>
-	<table id="marketsTable">
+	<button id="marketrefresh" style="float: right; margin-right: 0;" class="button btn-green" onclick="updateMarket()">Refresh</button>
+	<br/><br/><table id="marketsTable">
 		<thead><tr>
 			<th>Symbol</th><th>Name</th><th>Price</th><th>Change %</th><th>Day High</th><th>Day Low</th><th>Year High</th><th>Year Low</th><th></th><th></th>
 		</tr></thead>

@@ -350,15 +350,6 @@ td {
 	background: -webkit-gradient(linear, 0% 0%, 0% 25%, from(#f9f9f9), to(#fefefe));
 }
 
-#portfolioTable {
-	left: 0;
-	right: 0;
-	position: absolute;
-	margin: 20px auto auto auto;
-	margin-top: 20px;
-	width: 90%;
-}
-
 th {
 	background-image: linear-gradient(bottom, rgb(89,199,46) 0%, rgb(93,245,76) 51%);
 	background-image: -o-linear-gradient(bottom, rgb(89,199,46) 0%, rgb(93,245,76) 51%);
@@ -375,7 +366,7 @@ th {
 	);
 }
 
-tr:hover {
+#marketsTable tr:hover {
 	cursor: pointer;
 }
 
@@ -383,7 +374,7 @@ tr:hover {
 	border-right: 0;
 }
 
-#marketsTable {
+#marketsTable, #historyTable, #portfolioTable {
 	left: 0;
 	right: 0;
 	margin: auto;

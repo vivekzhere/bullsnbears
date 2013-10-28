@@ -13,7 +13,7 @@ require_once("includes/global.php");
 		if ($results->num_rows == 0) echo "You dont have any Bought stocks!";
 		else {
 ?>
-	<table id="portfolioTable">		
+	<br/><br/><table id="portfolioTable">		
 		<thead><tr>
 			<th>Name</th><th>Amount</th><th>Avg. Bought Price</th><th>Live Price</th><th>Inv. Value</th><th>Latest Value</th><th>Brokerage</th><th>Overall Gain</th><th></th>
 		</tr></thead>

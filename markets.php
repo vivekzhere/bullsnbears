@@ -10,7 +10,6 @@ if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
 	<div id="banner"></div>
 	<?php Menu(); ?>
 	<div id="content">
-		<button id="marketrefresh" style="float: right; margin-right: 0;" class="button btn-green" onclick="updateMarket()">Refresh</button>
 		<div id="markets"></div>
 	</div>
 
