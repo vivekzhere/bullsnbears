@@ -63,7 +63,7 @@ CONTENT;
 					<li class="Menu-li"><button type="button" onclick="window.location.href = 'markets.php'" class="Menu-btn">Market</button></li>
 					<li class="Menu-li"><button type="button" onclick="window.location.href = 'rankings.php'" class="Menu-btn">Rankings</button></li>
 					<li class="Menu-li"><button type="button" onclick="window.location.href = 'history.php'" class="Menu-btn">History</button></li>
-					<li class="Menu-li"><button type="button" onclick="window.location.href = 'help.php'" class="Menu-btn">Help</button></li>
+					<li class="Menu-li"><button type="button" onclick="window.location.href = 'help_out.php'" class="Menu-btn">Help</button></li>
 					<li class="Menu-li"><button type="button" onclick="window.location.href = 'logout.php'" class="Menu-btn" style="border-bottom-right-radius: 10px;">Logout</button></li>
 				</ul>
 			</div>

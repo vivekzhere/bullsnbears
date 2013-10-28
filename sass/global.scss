@@ -6,6 +6,20 @@ h2 {
 	font-size: 30px;
 }
 
+h3 {
+	font-size: 26px;
+}
+
+h4 {
+	font-size: 18px;
+}
+
+h2, h3, h4 {
+	font-weight: bold;
+	color: black;
+	padding-top: 10px;
+}
+
 #content {
 	position: absolute;
 	top:0; bottom:0; left:0; right:0;
@@ -380,6 +394,26 @@ th {
 	margin: auto;
 	position: absolute;
 	width: 95%;
+}
+
+#help li {
+	font-weight: normal;
+	padding: 10px;
+	color: grey;
+	font-size: 24px;
+	text-align: center;
+}
+
+#help p {
+	font-weight: 100;
+	color: black;
+	font-size: 16px;
+	padding-top: 15px;
+	text-align: justify;	
+}
+
+#help h4 {
+	text-align: left;
 }
 
 @media screen and (min-device-width: 320px) and (max-device-width: 440px)	{
