@@ -416,6 +416,40 @@ th {
 	text-align: left;
 }
 
+
+#lookup {
+	@include center;
+	top: 100px;
+	width: 400px;
+	height: 350px;
+}
+
+#symbol-select {
+	@include centerh;
+}
+
+#symbol {
+	@include box;
+	@include stylebg;
+	@include centerv;
+	overflow: auto;
+	width: 400px;
+	height: 300px;
+}
+
+#img-symbol {
+	background-size: 215px 240px;
+	width: 200px;
+	height: 190px;
+	margin-top: 30px;
+	float: left;
+	margin-left: 20px;
+}
+
+#symbol li {
+	width: 150px;
+}
+
 @media screen and (min-device-width: 320px) and (max-device-width: 440px)	{
 	#niftychart, #ticker {
 		display: none;
@@ -435,8 +469,19 @@ th {
 	#feedbackmsg {
 		width: 70%;
 	}
-	#portfolioTable {
+	#marketsTable, #historyTable, #portfolioTable {
 		width: 90%;
+	}
+	#lookup {
+
+		width: 350px;
+	}
+	#img-symbol {
+		width: 150px;
+		height: 175px;
+	}
+	#symbol {
+		width: 350px;
 	}
 	.data_name { margin-left: 2em; 	}
 	.data { margin-right: 2em; }
