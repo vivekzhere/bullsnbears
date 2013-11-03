@@ -1,5 +1,6 @@
 <?php
-require_once("includes/global.php");		
+require_once("includes/global.php");
+require_once("includes/sanitize.php");
 require_once("fb-sdk/facebook.php");
 
 

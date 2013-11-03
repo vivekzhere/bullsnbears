@@ -188,8 +188,10 @@ h2, h3, h4 {
 }
 
 #Stats {
-	position: absolute;
+	position: relative;
 	margin-left: 30px;
+	margin-bottom: 1.5em;
+	display: inline-block;
 	top: 1.5em;
 	width: 400px;
 	height: 320px;
@@ -235,26 +237,30 @@ h2, h3, h4 {
 	font-family: Helvetica;
 }
 
+@media screen and (min-device-width: 700px)	{
+
 #niftychart {
 	background: url('http://chart.finance.yahoo.com/t?s=^NSEI&lang=en-IN&region=IN&width=600&height=360') no-repeat;
 	background-size: 100% 100%;
+	display: inline-block;
+	margin-bottom: 1.5em;
 	width: 400px;
 	height: 320px;
-	position: absolute;
-	right: 30px;
+	position: relative;
+	left: 100px;
 	top: 1.5em;
 	border: 1px #111 solid;
 	overflow: hidden;
 }
 
+}
+
+
 #Refresh {
-	position: absolute;
-	top: 350px;
+	position: relative;
 	height: 30px;
 	width: 150px;
-	left: 0;
-	right: 0;
-	margin: auto;
+	left: 125px;
 }
 
 
@@ -315,11 +321,9 @@ btn-disabled {
 }
 
 #feedbackform {
-	position: absolute;
-	bottom: 5%;
+	position: relative;
 	width: 90%;
 	left: 5%;
-
 }
 
 .form-text {
@@ -380,19 +384,19 @@ th {
 	);
 }
 
+.table-btn:hover {
+	cursor: pointer;
+}
+
 #marketsTable tr:hover {
 	cursor: pointer;
 }
 
-#td-sell {
-	border-right: 0;
-}
-
-#marketsTable, #historyTable, #portfolioTable {
+#marketsTable, #historyTable, #portfolioTable, #tradeTable {
 	left: 0;
 	right: 0;
 	margin: auto;
-	position: absolute;
+	position: relative;
 	width: 95%;
 }
 
@@ -432,7 +436,7 @@ th {
 	@include centerh;
 }
 
-#symbol {
+#stock {
 	@include box;
 	@include stylebg;
 	@include centerv;
@@ -441,7 +445,7 @@ th {
 	height: 300px;
 }
 
-#img-symbol {
+#img-stock {
 	background-size: 215px 240px;
 	width: 200px;
 	height: 190px;
@@ -450,9 +454,18 @@ th {
 	margin-left: 20px;
 }
 
-#symbol li {
+#stock li {
 	width: 150px;
 }
+
+#transaction {
+	@include stylebg;
+	@include box;
+	@include center;
+	height: 350px;
+	width: 400px;
+}
+
 
 @media screen and (min-device-width: 320px) and (max-device-width: 440px)	{
 	#niftychart, #ticker {
@@ -463,12 +476,13 @@ th {
 		width: 96%;
 		margin-left: 2%;
 	}
+	#Refresh {
+		width: 50%;
+		left: 25%; 
+	}
 	#Stats {
 		width: 90%;
 		margin-left: 5%;
-	}
-	#feedbackform {
-		bottom: 3px;
 	}
 	#feedbackmsg {
 		width: 70%;
@@ -476,16 +490,24 @@ th {
 	#marketsTable, #historyTable, #portfolioTable {
 		width: 90%;
 	}
-	#lookup {
-
-		width: 350px;
+	#lookup, #stock {
+		width: 330px;
 	}
-	#img-symbol {
-		width: 150px;
-		height: 175px;
+	#img-stock {
+		background-size: 172px 192px;
+		width: 160px;
+		height: 152px;
+		width: 125px;
+		height: 160px;
 	}
 	#symbol {
-		width: 350px;
+		width: 330px;
+	}
+	#transaction {
+		width: 330px;
+	}
+	#stock > h2 {
+		font-size: 23px;
 	}
 	.data_name { margin-left: 2em; 	}
 	.data { margin-right: 2em; }

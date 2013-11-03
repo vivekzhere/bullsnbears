@@ -8,19 +8,7 @@ require_once("includes/global.php");
 ?>
 <?php	
 	$results = $mysqli->query("SELECT * FROM `stocks` ORDER BY `symbol` ASC");
-	$data = "";
-	while ($result = $results->fetch_assoc()) {
-		$data .= "<div id='{$result['symbol']}'>";
-		$data .= "<h2 align='center'>{$result['name']}</h2>";
-		$data .= "<div id='img-{$result['symbol']}' style='background-image: none;'></div>";
-		$data .= "<table style='float: right; margin-top: 30px; margin-right: 20px;'>";
-		$data .= "<tr><td>Value: </td><td>{$result['value']}</td></tr>";
-		$data .= "<tr><td>Change: </td><td>".addarrow($result['change'])."</td></tr>";
-		$data .= "<tr><td>Day High: </td><td>{$result['day_high']}</td></tr>";
-		$data .= "<tr><td>Day Low: </td><td>{$result['day_low']}</td></tr>";
-		$data .= "<tr><td>Year High: </td><td>{$result['week_high']}</td></tr>";
-		$data .= "<tr><td>Year Low: </td><td>{$result['week_low']}</td></tr>";
-		$data .= "</table></div>";
-	}
-	echo $data;
+	$data = array();
+	while ($result = $results->fetch_assoc()) $data[] = $result;
+	echo json_encode($data);
 ?>

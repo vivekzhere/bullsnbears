@@ -1,7 +1,7 @@
 <?php
 require_once("connection.php");
 	echo <<<CONTENT
-		<div id="ticker" style="height: 25px;" onclick="ToggleTicker();"><marquee onmouseleave="this.start();" onmouseover="this.stop();" id="ticker-text"><ul style="float: left; margin: 0; padding-right: 15px;">
+		<div id="ticker" onclick="ToggleTicker();"><marquee onmouseleave="this.start();" onmouseover="this.stop();" id="ticker-text"><ul style="float: left; margin: 0; padding-right: 15px;">
 CONTENT;
 	$sql = "select `symbol`, `value`, `change` from `stocks` order by `symbol`";
 	$stocks = $mysqli->query($sql);
@@ -10,7 +10,7 @@ CONTENT;
 		$symbol = $stock['symbol'];
 		$value = $stock['value'];
 		$change = $stock['change'];
-		$out .= '<li style="display: inline-block;"><span class="ticker-symbol">'.$symbol.'</span><span class="ticker-value">'.$value.'</span><span class="ticker-change">'.addarrow($change).'</span></li>';
+		$out .= '<li style="display: inline-block;"><span class="ticker-symbol">'.htmlspecialchars($symbol).'</span><span class="ticker-value">'.$value.'</span><span class="ticker-change">'.addarrow($change).'</span></li>';
 	}
 	echo $out;
 	echo <<<CONTENT

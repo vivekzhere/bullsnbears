@@ -89,11 +89,11 @@ CONTENT;
 				{	if (Req.readyState == 4) {
 						load.style.display = 'none';					
 						if (Req.status == 200 || Req.status == 304) {
-							if (Req.responseText != "failed!") document.getElementById(b).innerHTML = Req.responseText;
-							else alert("Failed!");
-						} else alert("Failed!");
+							if (Req.responseText == "failed!") Ajax_Failure(a, b, Req.responseText);
+							else Ajax_Success(a, b, Req.responseText);
+						} else Ajax_Failure(a, b, Req.responseText);
 					}
-  				}
+  				};
 				Req.open("GET", a, true);
 				Req.send();
 			}
@@ -113,14 +113,14 @@ CONTENT;
 				{	if (Req.readyState == 4) {
 						load.style.display = 'none';					
 						if (Req.status == 200 || Req.status == 304) {
-							if (Req.responseText != "failed!") { document.getElementById(b).innerHTML = Req.responseText; document.getElementById(b).value = Req.responseText; }
-							else alert("Failed!");
-						} else alert("Failed!");
+							if (Req.responseText == "failed!") Ajax_Failure(a, b, Req.responseText);
+							else Ajax_Success(a, b, Req.responseText);
+						} else Ajax_Failure(a, b, Req.responseText);
 					}
-  				}
-				Req.open("POST", a, true);
+  				};
+  				Req.open("POST", a, true);
 				Req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				Req.send(c);
+				Req.send(b);
 			}
 		</script>
 CONTENT;

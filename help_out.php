@@ -1,4 +1,6 @@
-<?php require_once("includes/global.php");
+<?php
+require_once("includes/global.php");
+require_once("includes/sanitize.php");
 	metadetails();
  ?>
 </head>
@@ -12,7 +14,7 @@
 			<br/><br/>
 			<ul>
 				<li> What Are Stocks?
-					<p>Plain and simple, stock is a share in the ownership of a company. Stock represents a claim on the company's assets and earnings. As you acquire more stock, your ownership stake in the company becomes greater. Whether you say shares, equity, or stock, it all means the same thing.<br />It must be emphasized that there are no guarantees when it comes to individual stocks. Some companies pay out dividends, but many others do not. And there is no obligation to pay out dividends even for those firms that have traditionally given them. Without dividends, an investor can make money on a stock only through its appreciation in the open market. On the downside, any stock may go bankrupt, in which case your investment is worth nothing.</p>
+					<p>Plain and simple, a stock is a share in the ownership of a company. Stock represents a claim on the company's assets and earnings. As you acquire more stock, your ownership stake in the company becomes greater. Whether you say shares, equity, or stock, it all means the same thing.<br />It must be emphasized that there are no guarantees when it comes to individual stocks. Some companies pay out dividends, but many others do not. And there is no obligation to pay out dividends even for those firms that have traditionally given them. Without dividends, an investor can make money on a stock only through its appreciation in the open market. On the downside, any stock may go bankrupt, in which case your investment is worth nothing.</p>
 				</li>
 				<li>Different Types Of Stocks
 					<p>There are two main types of stocks: common stock and preferred stock.</p>
