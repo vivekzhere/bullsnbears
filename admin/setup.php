@@ -21,8 +21,7 @@
 
 			$sql = "CREATE TABLE IF NOT EXISTS `history` (`t_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `p_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
 					`t_type` varchar(2) COLLATE utf8_unicode_ci NOT NULL, `symbol` varchar(20) COLLATE utf8_unicode_ci NOT NULL, 
-					`skey` bigint(20) NOT NULL, `amount` int(11) NOT NULL, `value` decimal(15,2) NOT NULL, `p_mval` int(11) NOT NULL,
-  					`p_liqcash` int(11) NOT NULL,`slno` bigint(20) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`slno`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+					`skey` bigint(20) NOT NULL, `amount` int(11) NOT NULL, `value` decimal(15,2) NOT NULL, PRIMARY KEY (`slno`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 			$mysqli->query($sql) or die($query.'<br />'.$mysqli->error);
 
 			$sql = "CREATE TABLE IF NOT EXISTS `player` (`id` varchar(30) NOT NULL, `name` varchar(40) NOT NULL, `liq_cash` int(11) NOT NULL,
@@ -37,7 +36,7 @@
 			$mysqli->query($sql) or die($query.'<br />'.$mysqli->error);
 
 			$sql = "CREATE TABLE IF NOT EXISTS `short_sell` (`id` varchar(30) NOT NULL, `symbol` varchar(20) NOT NULL,
-					`amount` int(11) NOT NULL, `val` decimal(15,2) NOT NULL, `day` datetime NOT NULL, PRIMARY KEY (`id`, `symbol`) )
+					`amount` int(11) NOT NULL, `val` decimal(15,2) NOT NULL, PRIMARY KEY (`id`, `symbol`) )
 					ENGINE=InnoDB DEFAULT CHARSET=latin1";
 			$mysqli->query($sql) or die($query.'<br />'.$mysqli->error);
 
