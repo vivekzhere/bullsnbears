@@ -4,8 +4,8 @@ require_once("includes/sanitize.php");
 
 	if (session_id() == '') session_start();
 	if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
-		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") && die();
-		elseif (!isset($_SESSION['id'])) header("Location: index.php") && die();
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") or die();
+		elseif (!isset($_SESSION['id'])) header("Location: index.php") or die();
 	}
 	metadetails();
 ?>
@@ -57,7 +57,7 @@ require_once("includes/sanitize.php");
 
 		function ShowValue(a) {
 			a = a || document.getElementById('symbol-select').value;
-			if (ReGet) AjaxGet('updatelookup.php');
+			if (ReGet) AjaxGet('updatemarkets.php');
 			else {
 				Stocks = JSON.parse(document.getElementById('data').innerHTML);
 				for (i = 0; Stocks[i] && Stocks[i]['symbol'] != a; i++);

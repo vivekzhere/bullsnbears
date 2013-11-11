@@ -2,15 +2,15 @@
 require_once("includes/global.php");
 require_once("includes/transactions.php");
 	if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
-		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0) || ($debug_status == 1 && $trade_status == 0)) { header("Location: testing.html"); die(); }
-		elseif (!isset($_SESSION['id'])) { header("Location: index.php"); die(); }
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0) || ($debug_status == 1 && $trade_status == 0)) header("Location: testing.html") or die();
+		elseif (!isset($_SESSION['id'])) header("Location: index.php") or die();
 	}
-	if (!(isset($_GET['type']) && isset($_GET['symbol']) && isset($_GET['amount']))) { header("Location: trade.php"); die(); }
+	if (!(isset($_GET['type']) && isset($_GET['symbol']) && isset($_GET['amount']))) header("Location: trade.php") or die();
 	$type = $_GET['type'];
 	$symbol = $_GET['symbol'];
 	$amount = $_GET['amount'];
 	$max_amount = 0;
-	if (!in_array($type, array("Buy", "Sell", "Short", "Cover"))) { header("Location: trade.php"); die(); }
+	if (!in_array($type, array("Buy", "Sell", "Short", "Cover"))) header("Location: trade.php") or die();
 
 	$player = $mysqli->query("SELECT `liq_cash`, `short_val`, `market_val` FROM `player` WHERE `id` = {$_SESSION['id']}");
 	$player = $player->fetch_assoc();
@@ -34,7 +34,7 @@ require_once("includes/transactions.php");
 				break;
 		}
 	}
-	if ($err_flag || !is_numeric($amount)) { header("Location: trade.php"); die(); }
+	if ($err_flag || !is_numeric($amount)) header("Location: trade.php") or die();
 	if ($amount > $max_amount) echo "The Amount you specified is too much. Try a lower value.";
 	else if ($amount < 1) echo "Positive Amount Needed.";
 	else if ($type == "Buy") if (Buy($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";

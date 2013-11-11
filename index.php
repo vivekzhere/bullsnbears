@@ -6,8 +6,8 @@ require_once("fb-sdk/facebook.php");
 
 	if (session_id() == '') session_start();
 	if (!(isset($_GET['key']) && $_GET['key'] == 'M1112AER') && !(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
-		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") && die();
-		elseif (isset($_SESSION['id'])) header("Location: home.php") && die();
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") or die();
+		elseif (isset($_SESSION['id'])) header("Location: home.php") or die();
 	} else header("Location: home.php");
 
 	$facebook = new Facebook($fbArray);
@@ -21,10 +21,10 @@ require_once("fb-sdk/facebook.php");
   		}
 	}
 	if ($user) {
-		$fql =   "select name, pic_square, email from user where uid='$user'";
+		$fql = "select name, pic_square, email from user where uid='$user'";
 		$access_token = $facebook->getAccessToken();
-		$param  =   array('method'     => 'fql.query', 'query'     => $fql, 'access_token' => $access_token , 'callback'    => '');
-		$fqlResult   =   $facebook->api($param);
+		$param  = array('method'     => 'fql.query', 'query'     => $fql, 'access_token' => $access_token , 'callback'    => '');
+		$fqlResult = $facebook->api($param);
 		$fbinfo = array('id' => $user, 'name' => $fqlResult[0]['name'], 'email' => $fqlResult[0]['email'], 'picurl' => $fqlResult[0]['pic_square']);
 		$_SESSION['id'] = $fbinfo['id'];
 		$_SESSION['name'] = $fbinfo['name'];

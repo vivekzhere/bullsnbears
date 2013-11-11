@@ -1,8 +1,8 @@
 <?php
 require_once("includes/global.php");
 	if (!(isset($_GET['key']) && $_GET['key'] == 'M1112AER') && !(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
-		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") && die();
-		elseif (!isset($_SESSION['id'])) header("Location: index.php") && die();
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") or die();
+		elseif (!isset($_SESSION['id'])) header("Location: index.php") or die();
 	}
 	$player_details = $mysqli->query("SELECT `name`, `liq_cash`, `day_worth`, `week_worth`, `market_val`, `rank` FROM `player` WHERE `id` = {$_SESSION['id']}");
 	$player_details = $player_details->fetch_assoc();

@@ -1,7 +1,9 @@
-<?php require_once("includes/global.php");
+<?php
+require_once("includes/global.php");
+require_once("includes/sanitize.php");
 if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
-		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") && die();
-		elseif (!isset($_SESSION['id'])) header("Location: index.php") && die();
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0)) header("Location: testing.html") or die();
+		elseif (!isset($_SESSION['id'])) header("Location: index.php") or die();
 	}
 	metadetails();
 	$results = $mysqli->query("SELECT `t_time`, `symbol`, `t_type`, `amount`, `value` from `history` WHERE `p_id` = '{$_SESSION['id']}' ORDER BY `t_time` DESC LIMIT 100");
@@ -26,11 +28,11 @@ if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
 		$t_time = $transaction['t_time'];
 		$t_time = date('j-M  H:i', strtotime($t_time));
 		$t_type = $transaction['t_type'];
-		if($t_type == 'b')
+		if($t_type == 'B')
 			$t_type = 'Buy';
-		else if($t_type == 's')
+		else if($t_type == 'S')
 			$t_type = 'Sell';
-		else if($t_type == 'c')
+		else if($t_type == 'C')
 			$t_type = 'Cover';
 		else
 			$t_type = 'Short Sell';			

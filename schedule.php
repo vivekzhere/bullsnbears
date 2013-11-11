@@ -2,8 +2,8 @@
 require_once("includes/global.php");
 require_once("includes/sanitize.php");
 	if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
-		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0) || ($debug_status == 1 && $schedule_status == 0)) header("Location: testing.html") && die();
-		elseif (!isset($_SESSION['id'])) header("Location: index.php") && die();
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0) || ($debug_status == 1 && $schedule_status == 0)) header("Location: testing.html") or die();
+		elseif (!isset($_SESSION['id'])) header("Location: index.php") or die();
 	}
 
 	$id = $_SESSION['id'];
@@ -59,7 +59,7 @@ require_once("includes/sanitize.php");
 			<tbody id="Trade-Symbol"></tbody>
 		</table>
 		<input id="transactionAmount" type="number" min=1 pattern="[0-9]+" placeholder="Enter Amount Here" required />
-		<input id="scheduledPrice" type="number" step="any" min=1 pattern="[0-9]+.[0-9]+" placeholder="Enter Schedule Value Here" required />
+		<input id="scheduledPrice" type="number" step="any" min=1 placeholder="Enter Schedule Value Here" required />
 		<input id="transactionSubmit" class="button btn-green" onclick="DoSchedule();" value="Schedule" type="submit">
 		<button id="schedule-ShowScheduled" style="position: absolute; width: 190px; left: 105px; bottom: 0px;" class="button btn-green" onclick="ToggleView(1)">Show Scheduled Transactions</button> 
 	</form>

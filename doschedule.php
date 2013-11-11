@@ -1,16 +1,16 @@
 <?php
 require_once("includes/global.php");
 	if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
-		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0) || ($debug_status == 1 && $trade_status == 0)) { header("Location: testing.html"); die(); }
-		elseif (!isset($_SESSION['id'])) { header("Location: index.php"); die(); }
+		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0) || ($debug_status == 1 && $trade_status == 0)) header("Location: testing.html") or die();
+		elseif (!isset($_SESSION['id'])) header("Location: index.php") or die();
 	}
-	if (!(isset($_GET['type']) && isset($_GET['symbol']) && isset($_GET['amount']) && isset($_GET['scheduledPrice']))) { header("Location: schedule.php"); die(); }
+	if (!(isset($_GET['type']) && isset($_GET['symbol']) && isset($_GET['amount']) && isset($_GET['scheduledPrice']))) header("Location: schedule.php") or die();
 	$type = $_GET['type'];
 	$symbol = $_GET['symbol'];
 	$amount = $_GET['amount'];
 	$scheduledPrice = $_GET['scheduledPrice'];
 	$max_amount = 0;
-	if (!in_array($type, array("Buy", "Sell", "Short", "Cover"))) { header("Location: schedule.php"); die(); }
+	if (!in_array($type, array("Buy", "Sell", "Short", "Cover"))) header("Location: schedule.php") or die();
 
 	$player = $mysqli->query("SELECT `liq_cash`, `short_val`, `market_val` FROM `player` WHERE `id` = {$_SESSION['id']}");
 	$player = $player->fetch_assoc();
@@ -39,7 +39,7 @@ require_once("includes/global.php");
 	}
 	if ($scheduledPrice <= $result['value']) $flag = "l";
 	else $flag = "g";
-	if ($err_flag || !is_numeric($amount) || !is_numeric($scheduledPrice)) { header("Location: schedule.php"); die(); }
+	if ($err_flag || !is_numeric($amount) || !is_numeric($scheduledPrice)) header("Location: schedule.php") or die();
 	if ($amount > $max_amount) echo "The Amount you specified is too much. Try a lower value.";
 	else if ($amount < 1) echo "Positive Amount Needed.";
 	else {

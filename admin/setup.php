@@ -1,12 +1,13 @@
 <?php
 require_once("../includes/config.php");
-
+require_once("../includes/connection.php");
+	if (!isset($_GET['key']) || ($_GET['key'] != $mainkey)) header("Location: index.php") or die();
 	if ($sqlid == '') {
 		echo 'Do';
 		//	Need to Set up from Scratch
 	}
 	else {
-		require_once("../includes/connection.php");
+		
 		$sql = "select 1 from symbols";
 		if (!$mysqli->query($sql)) {
 

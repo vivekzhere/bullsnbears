@@ -1,5 +1,5 @@
 <?php	
-require_once("includes/config.php");
+require_once("config.php");
 	//	Add Arrow based on Negative or Positibe.
 	function addarrow($value){
 		if ($value >= 0) $out = '<img src="images/up_g.gif" width="10" height="14" alt="up" /> <span style="color:green;">';

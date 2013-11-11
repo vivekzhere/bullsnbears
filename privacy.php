@@ -1,36 +1,20 @@
-<?php require_once("includes/global.php");
-            
+<?php
 
+require_once("includes/global.php");
 	metadetails();
-        if(isset($_GET['t']))
-                $t=$_GET['t'];
-        else
-               $t="help";
  ?>
 
-  
     
 </head>
 <body>
+<div id="banner"></div>
 <div id="content">
-	<?php 
-	
-	echo "<div id=\"banner\">
-		<h1>Bulls And Bears</h1>
-	</div><!-- banner -->";
-	?>
 <br/>
-     
-	<!--navigation-->
-	<div id="content_main">
-	<div id="help">
-		<h2>Privacy Policy</h2>
+	<h2>Privacy Policy</h2>
 
 	
 
 	<p>We want to inform you about our privacy policy, and how we will use any of your personal data you provide while playing Bulls n Bears. </p>
-
-
 
 	<h3>What data is collected and how it`s used</h3>
 
@@ -48,13 +32,6 @@
 
 	<p>If you for any reason wish to terminate your account or have any questions concerning your personal information, please feel free to contact us: bullsnbears@tathva.org</p>
 
-	
-
-
-	</div><!-- help -->
-	
-	
-	
-	</div><!-- content_main -->
-</div><!--content-->
+</div>
 </body>
+</html>
