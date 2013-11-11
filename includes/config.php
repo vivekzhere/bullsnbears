@@ -6,6 +6,7 @@
 	$sqlid = $config['sqlid'];
 	$sqlpass = $config['sqlpass'];
 	$bnbdbase = $config['bnbdbase'];
+	$mainkey = $config['mainkey'];
 	
 	$start_time = $config['start_time'];
 	$start_time_min = $config['start_time_min'];

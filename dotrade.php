@@ -1,5 +1,6 @@
 <?php
 require_once("includes/global.php");
+require_once("includes/transactions.php");
 	if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
 		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0) || ($debug_status == 1 && $trade_status == 0)) { header("Location: testing.html"); die(); }
 		elseif (!isset($_SESSION['id'])) { header("Location: index.php"); die(); }
@@ -32,83 +33,12 @@ require_once("includes/global.php");
 				$max_amount = $result['shorted_amount'];
 				break;
 		}
-	} 
+	}
 	if ($err_flag || !is_numeric($amount)) { header("Location: trade.php"); die(); }
 	if ($amount > $max_amount) echo "The Amount you specified is too much. Try a lower value.";
 	else if ($amount < 1) echo "Positive Amount Needed.";
-	else if ($type == "Buy") {
-		$err_flag = TRUE;
-		$mysqli->autocommit(FALSE);
-		$p = $mysqli->query("INSERT INTO `bought_stock` VALUES( '{$_SESSION['id']}', '{$symbol}', '{$amount}', '{$result['value']}' ) ON DUPLICATE KEY UPDATE `avg` = ((`avg` * `amount`) + ".($amount * $result['value'])." ) / (`amount` + ".$amount." ), `amount` = `amount` + ".$amount);
-		if ($p) {
-			$p = $mysqli->query("UPDATE `player` SET `rank` = 1, `liq_cash` = `liq_cash` - ".round($amount * $result['value'] * 1.002).", `market_val` = `market_val` + ".round($amount * $result['value'])." WHERE `id` = '{$_SESSION['id']}'");
-			if ($p) {
-				$p = $mysqli->query("INSERT INTO `history` ( `p_id`, `t_type`, `symbol`, `amount`, `value` ) VALUES ( '{$_SESSION['id']}', 'B', '{$symbol}', '{$amount}', '{$result['value']}' )"); 
-				if (!$p) $mysqli->rollback();
-				else {
-					$mysqli->commit();
-					$err_flag = FALSE;
-				}
-			} else $mysqli->rollback(); 
-		} else $mysqli->rollback();
-		if ($err_flag) echo "Failure!"; else echo "Success!";
-		$mysqli->autocommit(TRUE);
-	} else  if ($type == "Sell") {
-		$err_flag = TRUE;
-		$mysqli->autocommit(FALSE);
-		if ($amount != $max_amount) $p = $mysqli->query("UPDATE `bought_stock` SET `avg` = ((`avg` * `amount`) - ".($amount * $result['value'])." ) / (`amount` - ".$amount." ), `amount` = `amount` - ".$amount." WHERE `id` = '{$_SESSION['id']}' AND `symbol` = '{$symbol}'");
-		else $p = $mysqli->query("DELETE FROM `bought_stock` WHERE `id` = '{$_SESSION['id']}' AND symbol = '{$symbol}'"); 
-		if ($p) {
-			$p = $mysqli->query("UPDATE `player` SET `liq_cash` = `liq_cash` + ".round($amount * $result['value'] * 0.998).", `market_val` = Case When (`market_val` - ".ceil($amount*$result['value']).") < 0 THEN 0 ELSE (`market_val` - ".ceil($amount*$result['value']).") END WHERE `id` = '{$_SESSION['id']}'");
-			if ($p) {
-				$p = $mysqli->query("INSERT INTO `history` ( `p_id`, `t_type`, `symbol`, `amount`, `value` ) VALUES ( '{$_SESSION['id']}', 'S', '{$symbol}', '{$amount}', '{$result['value']}' )"); 
-				if (!$p) $mysqli->rollback();
-				else {
-					$mysqli->commit();
-					$err_flag = FALSE;
-				}
-			} else $mysqli->rollback(); 
-		} else $mysqli->rollback();
-		if ($err_flag) echo "Failure!"; else echo "Success!";
-		$mysqli->autocommit(TRUE);
-	} else if ($type == "Short") {
-		$err_flag = TRUE;
-		$mysqli->autocommit(FALSE);
-		$p = $mysqli->query("INSERT INTO `short_sell` VALUES( '{$_SESSION['id']}', '{$symbol}', '{$amount}', '{$result['value']}' ) ON DUPLICATE KEY UPDATE `val` = ((`val` * `amount`) + ".($amount * $result['value'])." ) / (`amount` + ".$amount." ), `amount` = `amount` + ".$amount);
-		if ($p) {
-			$p = $mysqli->query("UPDATE `player` SET `rank` = 1, `liq_cash` = `liq_cash` - ".round($amount * $result['value'] * 0.002).", `short_val` = `short_val` + ".round($amount * $result['value'] )." WHERE `id` = '{$_SESSION['id']}'");
-			if ($p) {
-				$p = $mysqli->query("INSERT INTO `history` ( `p_id`, `t_type`, `symbol`, `amount`, `value` ) VALUES ( '{$_SESSION['id']}', 'SS', '{$symbol}', '{$amount}', '{$result['value']}' )"); 
-				if (!$p) $mysqli->rollback();
-				else {
-					$mysqli->commit();
-					$err_flag = FALSE;
-				}
-			} else $mysqli->rollback(); 
-		} else $mysqli->rollback();
-		if ($err_flag) echo "Failure!"; else echo "Success!";
-		$mysqli->autocommit(TRUE);
-	} else  if ($type == "Cover") {
-		$err_flag = TRUE;
-		$mysqli->autocommit(FALSE);
-		$x = $mysqli->query("SELECT (amount * val) AS `old` FROM `short_sell` WHERE `id` = '{$_SESSION['id']}' AND `symbol` = '{$symbol}'");
-		if ($x) {
-			$x = $x->fetch_assoc();
-			if ($amount != $max_amount) $p = $mysqli->query("UPDATE `short_sell` SET `val` = ((`val` * `amount`) - ".($amount * $result['value'])." ) / (`amount` - ".$amount." ), `amount` = `amount` - ".$amount." WHERE `id` = '{$_SESSION['id']}' AND `symbol` = '{$symbol}'");
-			else $p = $mysqli->query("DELETE FROM `short_sell` WHERE `id` = '{$_SESSION['id']}' AND symbol = '{$symbol}'"); 
-			if ($p) {
-				$p = $mysqli->query("UPDATE `player` SET `liq_cash` = `liq_cash` + ".round($x['old'] - $amount * $result['value'] * 0.998).", `short_val` = Case When (`short_val` - ".ceil($amount * $result['value']).") < 0 THEN 0 ELSE (`short_val` - ".ceil($amount * $result['value']).") END WHERE `id` = '{$_SESSION['id']}'");
-				if ($p) {
-					$p = $mysqli->query("INSERT INTO `history` ( `p_id`, `t_type`, `symbol`, `amount`, `value` ) VALUES ( '{$_SESSION['id']}', 'C', '{$symbol}', '{$amount}', '{$result['value']}' )"); 
-					if (!$p) $mysqli->rollback();
-					else {
-						$mysqli->commit();
-						$err_flag = FALSE;
-					}
-				} else $mysqli->rollback(); 
-			} else $mysqli->rollback();
-		}
-		if ($err_flag) echo "Failure!"; else echo "Success!";
-		$mysqli->autocommit(TRUE);
-	}
+	else if ($type == "Buy") if (Buy($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";
+	else  if ($type == "Sell") if (Sell($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";
+	else if ($type == "Short") if (Short($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";
+	else  if ($type == "Cover") if (Cover($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";
 ?>
