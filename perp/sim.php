@@ -1,73 +1,34 @@
 <?php
-// To simulate game from history table
+require_once("../includes/config.php");
+require_once("../includes/connection.php");
 
-if($_GET['key']=="Ti1lLSK65bds")
-{
-	require_once("../includes/global.php");
-	$sql="delete from bought_stock";
-	echo $sql.";<br />";
-	mysql_query($sql) or die(mysql_error());
-	$sql="delete from short_sell";
-	echo $sql.";<br />";
-	mysql_query($sql) or die(mysql_error());
-	$sql="update player set liq_cash=2500000, market_val=0, rank=0, day_worth=2500000, week_worth=2500000, short_val=0";
-	echo $sql.";<br /><br />";
-	mysql_query($sql) or die(mysql_error());
-	
-	//$sql= "select * from history WHERE p_id=100001180026427 ORDER BY t_time";
-	$sql= "select * from history ORDER BY t_time";
-	$results = mysql_query($sql) or die(mysql_error());
-	$i=0;
-	while($history = mysql_fetch_assoc($results))
-	{
-		$i++;
-		//print_r($history);		
-		//echo "<br />";
-				
-		if($history['t_type'] == 'b')
-		{							
-			$sql_player = "update player set liq_cash = liq_cash-({$history['amount']}*{$history['value']}*1.002), rank='1' where id = '{$history['p_id']}'";
-			$sql_stock = "insert into bought_stock values( '{$history['p_id']}' , '{$history['symbol']}' , '{$history['amount']}', '{$history['value']}' ) on duplicate key update avg = ((avg*amount)+({$history['value']}*{$history['amount']}))/(amount+{$history['amount']}), amount = amount+{$history['amount']}";		
-			
-		}
-		else if($history['t_type'] == 'ss')
-		{
-			$sql_player = "update player set liq_cash = liq_cash-({$history['amount']}*{$history['value']}*0.002), rank='1' where id = '{$history['p_id']}'";
-			$sql_stock = "insert into short_sell values( '{$history['p_id']}' , '{$history['symbol']}' , '{$history['amount']}', '{$history['value']}' , '{$history['t_time']}' ) on duplicate key update val = ((val*amount)+({$history['value']}*{$history['amount']}))/(amount+{$history['amount']}), amount = amount+{$history['amount']}";	
-		}
-		else if($history['t_type'] == 's')
-		{	
-			$sql_player = "update player set liq_cash = liq_cash+({$history['amount']}*{$history['value']}*0.998), rank='1' where id = '{$history['p_id']}'";
-			$sql_stock = "update bought_stock set amount=amount-'{$history['amount']}' where id='{$history['p_id']}' and symbol='{$history['symbol']}'";
-		}
-		else if($history['t_type'] == 'c')
-		{
-			$sql="select val from short_sell where id='{$history['p_id']}' and symbol='{$history['symbol']}'";
-			$shortres=mysql_query($sql) or die(mysql_error());
-			$shortval = mysql_fetch_assoc($shortres);
-			//echo $shortval['val']." ";
-			$liqchange = ($shortval['val']-$history['value'])*$history['amount'];
-			$liqchange -= $history['amount']*$history['value']*0.002;
-			//echo $liqchange;
-			$sql_player = "update player set liq_cash =liq_cash+{$liqchange}, rank='1' where id = '{$history['p_id']}'";
-			$sql_stock = "update short_sell set amount=amount-{$history['amount']} where id='{$history['p_id']}' and symbol='{$history['symbol']}'";
-		}
-		echo $sql_player.";<br />".$sql_stock.";<br /><br />";
-		mysql_query($sql_player) or die(mysql_error());
-		mysql_query($sql_stock) or die(mysql_error());
-		$sql="delete from bought_stock where amount=0";
-		echo $sql.";<br />";
-		mysql_query($sql) or die(mysql_error());
-		$sql="delete from short_sell where amount=0";
-		echo $sql.";<br />";
-		mysql_query($sql) or die(mysql_error());
-		
-		/*$sql ="select liq_cash from player where id =100001180026427";
-		$temp=mysql_query($sql) or die(mysql_error());
-		print_r(mysql_fetch_assoc($temp));
-		echo "<br />";*/
+	session_start();
+	if (!in_array($_SESSION['id'], $admins) || $_GET['key'] != $mainkey) header("Location: ../index.php") or die();
+	$err_flag = FALSE;
+	$mysqli->autocommit(FALSE);
+	$mysqli->query("DELETE FROM `bought_stock` WHERE 1") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("DELETE FROM `short_sell` WHERE 1") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE `player` SET liq_cash = '{$start_money}', market_val = 0 WHERE rank = 1") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE `player` SET liq_cash = liq_cash - (SELECT SUM(amount * value * 1.002) FROM history WHERE history.p_id = player.id and t_type = 'B' GROUP BY history.p_id)") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE `player` SET liq_cash = liq_cash + (SELECT SUM(amount * value * 0.998) FROM history WHERE history.p_id = player.id and t_type = 'S' GROUP BY history.p_id)") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE `player` SET liq_cash = liq_cash - (SELECT SUM(amount * value * 0.002) FROM history WHERE history.p_id = player.id and (t_type = 'C' || t_type = 'SS') GROUP BY history.p_id)") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("INSERT INTO bought_stock (SELECT p_id, symbol, SUM(amount) as amt, (SUM(amount * value) / SUM(amount)) as value FROM history WHERE t_type = 'B' GROUP BY p_id, symbol)") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE bought_stock dest, (SELECT p_id, symbol, SUM(amount) as amt, (SUM(amount * value) / SUM(amount)) as value FROM history WHERE t_type = 'S' GROUP BY p_id, symbol) src SET dest.amount = dest.amount - src.amt, dest.avg = (dest.amount * dest.avg - src.amt * src.value) / (dest.amount - src.amt) WHERE dest.id = src.p_id AND dest.symbol = src.symbol") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("INSERT INTO short_sell (SELECT p_id, symbol, SUM(amount) as amt, (SUM(amount * value) / SUM(amount)) as value FROM history WHERE t_type = 'SS' GROUP BY p_id, symbol)") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE player dest, (SELECT p_id, symbol, SUM(amount) as amt, (SUM(amount * value) / SUM(amount)) as value FROM history WHERE t_type = 'C' GROUP BY p_id, symbol) src, short_sell srcb SET dest.liq_cash = dest.liq_cash + (srcb.val - src.value) * src.amt WHERE dest.id = src.p_id AND src.symbol = srcb.symbol AND dest.id = srcb.id") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE short_sell dest, (SELECT p_id, symbol, SUM(amount) as amt, (SUM(amount * value) / SUM(amount)) as value FROM history WHERE t_type = 'C' GROUP BY p_id, symbol) src SET dest.amount = dest.amount - src.amt, dest.val = (dest.amount * dest.val - src.amt * src.value) / (dest.amount - src.amt) WHERE dest.id = src.p_id AND dest.symbol = src.symbol") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("DELETE FROM `bought_stock` WHERE amount = 0") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("DELETE FROM `short_sell` WHERE amount = 0") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE `player` SET short_val = (SELECT SUM(amount * val) FROM short_sell WHERE id = player.id GROUP BY id)") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("CREATE TEMPORARY TABLE MarketVal (id VARCHAR(15) NOT NULL, b_amount INT NOT NULL DEFAULT 0,  ss_amount INT NOT NULL DEFAULT 0, ss_value DECIMAL(15, 2) NOT NULL DEFAULT 0, value INT) ENGINE=MEMORY;") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("INSERT INTO MarketVal (SELECT b.id as ID, IFNULL((b.amount), 0) AS b_amount, IFNULL((ss.amount), 0), IFNULL((ss.val), 0) AS ss_value, s.value FROM short_sell AS ss RIGHT JOIN bought_stock AS b ON b.symbol = ss.symbol AND b.id = ss.id LEFT JOIN stocks AS s ON s.symbol = b.symbol) UNION (SELECT ss.id as ID, IFNULL((b.amount), 0) AS b_amount, IFNULL((ss.amount), 0), IFNULL((ss.val), 0) AS ss_value, s.value FROM short_sell AS ss LEFT JOIN bought_stock AS b ON ss.symbol = b.symbol AND ss.id = b.id LEFT JOIN stocks AS s ON s.symbol = ss.symbol)") or $err_flag = TRUE;
+	if (!$err_flag) $mysqli->query("UPDATE player SET market_val = (SELECT SUM(MarketVal.b_amount * MarketVal.value) + SUM(MarketVal.ss_amount * (MarketVal.ss_value - MarketVal.value)) from MarketVal WHERE MarketVal.id = player.id) WHERE rank = 1") or $err_flag = TRUE;
+	if (!$err_flag) {
+		$mysqli->commit();
+		echo "Success!";
+	} else {
+		$mysqli->rollback();
+		echo "Failure!";
 	}
-	
-	echo $i;
-}
+	$mysqli->autocommit(TRUE);
 ?>
