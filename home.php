@@ -59,14 +59,15 @@ require_once("includes/sanitize.php");
 		<button id="Refresh" class="button btn-green" onclick="RefreshHome();">Refresh</button><br/><br/>
 		<form id="feedbackform" onsubmit="return false;">
   			<fieldset>
-    			<input type="text" id="feedbackmsg" onchange="if (this.value.length > 5) document.getElementById('feedbacksubmit').hidden = false; else document.getElementById('feedbacksubmit').hidden = true;" class="form-text"  style="left: 5%; height: 1.5em;" placeholder="Any Feedback ? :) Latest News & Hints available on our Facebook Page!">
-				<button id="feedbacksubmit" onclick="AjaxPost('sendmsg.php', 'msg=' + document.getElementById('feedbackmsg').value);" style="height: 1.5em;" class="button btn-green" >Submit</button>
+    			<input type="text" id="feedbackmsg" required pattern=".{5,100}" oninput="if (this.checkValidity()) document.getElementById('feedbacksubmit').hidden = false; else document.getElementById('feedbacksubmit').hidden = true;" class="form-text"  style="left: 5%; height: 1.5em;" placeholder="Any Feedback ? :) Latest News & Hints available on our Facebook Page!">
+				<input type="submit" onclick="if (this.checkValidity()) AjaxPost('sendmsg.php', 'msg=' + document.getElementById('feedbackmsg').value);" id="feedbacksubmit" style="height: 1.5em;" class="button btn-green" value="Submit">
   			</fieldset>
 		</form>
 	</div>
 	<script>
+		document.getElementById('feedbacksubmit').hidden = true;
 		function RefreshHome() {
-			AjaxPost('updatehome.php', '', '');
+			AjaxPost('updatehome.php');
 			pr = document.getElementById("Refresh");
 			if (pr) { pr.className = pr.className.replace(" btn-green",""); pr.disabled = true; }
 		}

@@ -39,12 +39,11 @@ require_once("includes/sanitize.php");
 		}
 		$symbol = (isset($_GET['symbol'])) ? $_GET['symbol'] : "";
 		$i = 0;
-		if ($symbol) for ($i = 0; $symbols[i] && $symbols[i]['symbol'] != $symbol; $i++);
+		if ($symbol) for ($i = 0; $symbols[$i] && $symbols[$i]['symbol'] != $symbol; $i++);
 		if ($symbols[$i] && $symbols[$i]['symbol'] == $symbol) {
 			if ($type == "Sell" && $symbols[$i]['bought_amount'] == 0) $symbol = "";
 			else if ($type == "Cover" && $symbols[$i]['shorted_amount'] == 0) $symbol = "";
 		} else $symbol = "";
-		
 	} else $mtime = false;
 	metadetails();
 ?>
@@ -157,11 +156,12 @@ require_once("includes/sanitize.php");
 			t = (p.value == "") ? 1 : parseInt(p.value);
 			if (t < p.min) t = 1;
 			else if (t > p.max) t = p.max;
-			p.value = t;
+			if (p.value != "") p.value = t;
 			document.getElementById('sale_value').innerHTML = (t * parseFloat(document.getElementById('stock_value').innerHTML) * 1.002).toFixed(2);
 		};
 		
 		function DoTrade() {
+			if (!document.getElementById("transaction").checkValidity()) return;
 			type = document.getElementById("type-select").value;
 			symbol = document.getElementById("stock-select").value;
 			amount = document.getElementById("transactionAmount").value;

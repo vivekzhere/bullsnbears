@@ -140,14 +140,14 @@ require_once("includes/sanitize.php");
 		function ChangeAmount() {
 			p = document.getElementById('transactionAmount');
 			t = (p.value == "") ? 1 : parseInt(p.value);
-			document.getElementById('scheduledPrice').value = (p.value == "") ? 1 : document.getElementById('scheduledPrice').value;
 			if (t < p.min) t = 1;
 			else if (t > p.max) t = p.max;
-			p.value = t;
+			if (p.value != "") p.value = t;
 			document.getElementById('sale_value').innerHTML = (t * parseFloat(document.getElementById('scheduledPrice').value) * 1.002).toFixed(2);
 		};
 		
 		function DoSchedule() {
+			if (!document.getElementById("transaction").checkValidity()) return;
 			type = document.getElementById("type-select").value;
 			symbol = document.getElementById("stock-select").value;
 			amount = document.getElementById("transactionAmount").value;
