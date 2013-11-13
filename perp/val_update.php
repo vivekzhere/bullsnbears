@@ -1,279 +1,69 @@
 <?php 
-	require_once("../includes/global.php");
-	include("./stock_update.php");
-	$mt = strftime("%H", time());
-	$mt_m = strftime("%M", time());
-	$mt_d = strtolower(strftime("%A",time())); 
-	if($_GET['key']=="Ti1lLSK65bds")
-	{
-		$sql="select `symbol`, `value` from `stockval`";
-		$stocks = mysql_query($sql);
-		$value = array();
-		while($stock = mysql_fetch_array($stocks))
-		{
-			$value[$stock['symbol']] = $stock['value'];
+require_once("../includes/config.php");
+require_once("../includes/connection.php");
+require_once("../includes/transactions.php");
+	if ($_GET['key'] == $mainkey) {		
+		require_once("stock_update.php");
+		$mysqli->query("CREATE TEMPORARY TABLE ScheduleProc (id VARCHAR(15) NOT NULL, p_liqcash INT NOT NULL DEFAULT 0, p_mval INT NOT NULL DEFAULT 0, p_sval INT NOT NULL DEFAULT 0, amount INT NOT NULL DEFAULT 0,  symbol VARCHAR(12) NOT NULL, skey BIGINT DEFAULT 0, type VARCHAR(2), value INT, bought_amount INT NOT NULL DEFAULT 0, shorted_amount INT NOT NULL DEFAULT 0) ENGINE=MEMORY;");
+		$mysqli->query("INSERT INTO ScheduleProc (SELECT id, 0, 0, 0, pend_no_shares, schedule.symbol, skey, transaction_type, stocks.value, 0, 0 FROM schedule JOIN stocks ON schedule.symbol = stocks.symbol AND ( (schedule.flag = 'l' AND schedule.scheduled_price >= stocks.value) OR (schedule.flag = 'g' AND schedule.scheduled_price <= stocks.value) ))");
+		$mysqli->query("UPDATE ScheduleProc, (SELECT id, liq_cash, market_val, short_val FROM player) P SET p_liqcash = P.liq_cash, p_mval = P.market_val, p_sval = P.short_val WHERE P.id = ScheduleProc.id");
+		$mysqli->query("UPDATE ScheduleProc SET bought_amount = (SELECT amount FROM bought_stock WHERE bought_stock.id = ScheduleProc.id AND bought_stock.symbol = ScheduleProc.symbol)");
+		$mysqli->query("UPDATE ScheduleProc SET shorted_amount = (SELECT amount FROM short_sell WHERE short_sell.id = ScheduleProc.id AND short_sell.symbol = ScheduleProc.symbol)");
+		$mysqli->query("DELETE FROM ScheduleProc WHERE amount <= 0");
+		$res = $mysqli->query("SELECT * from ScheduleProc");
+		while ($r = $res->fetch_assoc()) $Schedules[] = $r;
+		$res = $mysqli->query("SELECT * from player WHERE id IN (SELECT DISTINCT(id) FROM ScheduleProc)");
+		while ($r = $res->fetch_assoc()) $Players[$r['id']] = $r;
+		$res = $mysqli->query("SELECT id, symbol, amount from bought_stock WHERE id IN (SELECT DISTINCT(id) FROM ScheduleProc)");
+		while ($r = $res->fetch_assoc()) $Players[$r['id']][$r['symbol']]['bought'] = $r['amount'];
+		$res = $mysqli->query("SELECT id, symbol, amount, val from short_sell WHERE id IN (SELECT DISTINCT(id) FROM ScheduleProc)");
+		while ($r = $res->fetch_assoc()) {
+			$Players[$r['id']][$r['symbol']]['shorted'] = $r['amount'];
+			$Players[$r['id']][$r['symbol']]['s_val'] = $r['val'];
 		}
-		$sql = "select `id`, `liq_cash` from player";
-		$players = mysql_query($sql) or die(mysql_error());
-		$player = array();
-		while($play = mysql_fetch_assoc($players))
-		{
-			$player[$play['id']] = $play['liq_cash'];
+		if (!isset($Schedules)) die();
+		foreach ($Schedules as &$Schedule) {
+			$Players[$Schedule['id']][$Schedule['symbol']]['bought'] = (isset($Players[$Schedule['id']][$Schedule['symbol']]['bought'])) ? $Players[$Schedule['id']][$Schedule['symbol']]['bought'] : 0;
+			$Players[$Schedule['id']][$Schedule['symbol']]['shorted'] = (isset($Players[$Schedule['id']][$Schedule['symbol']]['shorted'])) ? $Players[$Schedule['id']][$Schedule['symbol']]['shorted'] : 0;
+			$Players[$Schedule['id']][$Schedule['symbol']]['s_val'] = (isset($Players[$Schedule['id']][$Schedule['symbol']]['s_val'])) ? $Players[$Schedule['id']][$Schedule['symbol']]['s_val'] : 0;
+			$array = array( 'value' => $Schedule['value'], 'bought_amount' => $Players[$Schedule['id']][$Schedule['symbol']]['bought'], 'shorted_amount' => $Players[$Schedule['id']][$Schedule['symbol']]['shorted']);
+			switch ($Schedule['type']) {
+				case "B":
+					$amount = max(min(floor( ($Players[$Schedule['id']]['liq_cash']- ($Players[$Schedule['id']]['short_val'] / 4) ) / (1.002 * $Schedule['value'] ) ), floor( ($Players[$Schedule['id']]['liq_cash'] + $Players[$Schedule['id']]['market_val']) / (6*1.002*$Schedule['value']) ) - $Players[$Schedule['id']][$Schedule['symbol']]['bought']), 0);
+					$amount = max(min($Schedule['amount'], $amount), 0);
+					if ($amount && !Buy($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
+						$Players[$Schedule['id']]['liq_cash'] -= $amount * $Schedule['value'] * 1.002;
+						$Players[$Schedule['id']]['market_val'] += $amount * $Schedule['value'];
+						$Players[$Schedule['id']][$Schedule['symbol']]['bought'] += $amount;
+					}
+				break;
+				case "S":					
+					$amount = max(min($Schedule['amount'], $Players[$Schedule['id']][$Schedule['symbol']]['bought']), 0);
+					if ($amount && !Sell($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
+						$Players[$Schedule['id']]['liq_cash'] += $amount * $Schedule['value'] * 0.998;
+						$Players[$Schedule['id']]['market_val'] -= $amount * $Schedule['value'];
+						$Players[$Schedule['id']][$Schedule['symbol']]['bought'] -= $amount;
+					}
+				break;
+				case "SS":
+					$amount = max(min(floor( ((4 * $Players[$Schedule['id']]['liq_cash'] ) - $Players[$Schedule['id']]['short_val'] ) / ( $Schedule['value'] * 1.004 ) ), floor( ($Players[$Schedule['id']]['liq_cash'] + $Players[$Schedule['id']]['market_val'] - $Players[$Schedule['id']]['short_val'] ) / (6 * $Schedule['value'] * 1.004) )) - $Players[$Schedule['id']][$Schedule['symbol']]['shorted'], 0);
+					$amount = max(min($Schedule['amount'], $amount), 0);
+					if ($amount && !Short($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
+						$Players[$Schedule['id']]['liq_cash'] -= $amount * $Schedule['value'] * .002;
+						$Players[$Schedule['id']]['short_val'] += $amount * $Schedule['value'];
+						$Players[$Schedule['id']][$Schedule['symbol']]['shorted'] += $amount;
+					}
+				break;
+				case "C":
+					$amount = max(min($Schedule['amount'], $Players[$Schedule['id']][$Schedule['symbol']]['shorted']), 0);
+					if ($amount && !Cover($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
+						$Players[$Schedule['id']]['liq_cash'] += ($Players[$Schedule['id']][$Schedule['symbol']]['s_val'] - $Schedule['value'] * 0.998) * $amount;
+						$Players[$Schedule['id']]['short_val'] -= $amount * $Schedule['value'];
+					}
+				break;
+			}
 		}
-		foreach($player as $id => $liq_cash)
-		{
-			$sql="select * from `player` where `id` ='$id'";
-			$pdetails = mysql_query($sql) or die(mysql_error());
-			$pdetail = mysql_fetch_assoc($pdetails);
-			$shrtval=$pdetail['short_val'];
-			$money=$pdetail['liq_cash'];
-			$mval=$pdetail['market_val'];
-			$sql="select * from `schedule` where id='$id'";
-			$pschedules = mysql_query($sql) or die(mysql_error());
-			while($pschedule = mysql_fetch_assoc($pschedules))
-			{
-				$passet=$money+$mval;
-				if( ( ($pschedule['scheduled_price'] >= $value[$pschedule['symbol']] && $pschedule['flag']=='l') || ($pschedule['scheduled_price'] <= $value[$pschedule['symbol']] && $pschedule['flag']=='g') ) && ($pschedule['pend_no_shares']!=0 ) )
-				{
-					if($pschedule['transaction_type']=="b")		//buy
-					{
-						$sql="select * from bought_stock where id = '$id' and symbol = '{$pschedule['symbol']}'";
-						$bstocks = mysql_query($sql) or die(mysql_error());
-						if(mysql_num_rows($bstocks)>0)
-						{
-							$bstock = mysql_fetch_array($bstocks);
-							$n = $bstock['amount'];
-						}
-						else
-						{
-							$n=0;	
-						}
-						$max=min(floor(($money-($shrtval/4))/(1.002*$value[$pschedule['symbol']])),floor($passet/(6*(1.002*$value[$pschedule['symbol']]))) - $n);
-						if($max>0)
-						{
-							if($max>$pschedule['pend_no_shares'])
-							{
-								$pendstock=0;
-							}
-							else
-							{
-								$pendstock=$pschedule['pend_no_shares']-$max;
-							}
-							$donestocks=$pschedule['pend_no_shares']-$pendstock;
-							if(mysql_num_rows($bstocks) == 0)
-							{
-								$sql = "insert into bought_stock values( '$id' , '{$pschedule['symbol']}' , '{$donestocks}', '{$value[$pschedule['symbol']]}' )";
-							}
-							else
-							{
-								$newno = $bstock['amount'] + $donestocks;
-								$avg = (($bstock['amount'] * $bstock['avg']) + ($donestocks * $value[$pschedule['symbol']]))/$newno;
-								$sql = "update bought_stock set amount = '{$newno}', avg = '{$avg}' where id = '$id' and symbol = '{$pschedule['symbol']}'";
-							}
-							$resultset = mysql_query($sql) or die(mysql_error());
-							if($resultset)
-							{
-								
-								$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-								$hsql = "insert into history (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
-								mysql_query($hsql) or die(mysql_error());
-								
-								
-								
-								$mval = $mval + $donestocks * $value[$pschedule['symbol']];
-								$money = $money - round(($donestocks * $value[$pschedule['symbol']] * 1.002));
-								$sql = "update player set liq_cash = '{$money}', rank='1' where id = '$id'";
-								$resultset = mysql_query($sql) or die(mysql_error());
-								$sql="update schedule set pend_no_shares = '{$pendstock}' where skey='{$pschedule['skey']}'";
-								mysql_query($sql) or die(mysql_error());				
-							}					
-						}
-					}
-					else if($pschedule['transaction_type']=="ss")	//short
-					{
-						$sql="select * from short_sell where id = '$id' and symbol = '{$pschedule['symbol']}'";
-						$bstocks = mysql_query($sql) or die(mysql_error());
-						if(mysql_num_rows($bstocks)>0)
-						{
-							$bstock = mysql_fetch_array($bstocks);
-							$n = $bstock['amount'];
-						}
-						else
-						{
-							$n=0;	
-						}
-						$max=min(floor( ( (4*$money)-$shrtval) / ($value[$pschedule['symbol']]*1.004) ),floor( ($passet-$shrtval) / (6* ($value[$pschedule['symbol']]*1.004)) ) - $n);
-						if($max>0)
-						{
-							if($max>$pschedule['pend_no_shares'])
-							{
-								$pendstock=0;
-							}
-							else
-							{
-								$pendstock=$pschedule['pend_no_shares']-$max;
-							}
-							$donestocks=$pschedule['pend_no_shares']-$pendstock;
-							$tme = strftime("%Y-%m-%d", time());
-							if(mysql_num_rows($bstocks) == 0)
-							{
-								$sql = "insert into short_sell values( '$id' , '{$pschedule['symbol']}' , '{$donestocks}', '{$value[$pschedule['symbol']]}', '{$tme}' )";
-							}
-							else
-							{
-								$newno = $bstock['amount'] + $donestocks;						
-								$avg = (($bstock['amount'] * $bstock['val']) + ($donestocks * $value[$pschedule['symbol']]))/$newno;
-								$sql = "update short_sell set amount = '{$newno}', val = '{$avg}' where id = '$id' and symbol = '{$pschedule['symbol']}' and day ='{$tme}'";						
-							}
-							$resultset = mysql_query($sql) or die(mysql_error());
-							if($resultset)
-							{
-								$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-								$hsql = "insert into history (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
-								mysql_query($hsql) or die(mysql_error());
-								
-								
-								
-								
-								$shrtval=$shrtval+$donestocks * $value[$pschedule['symbol']];
-								$money = $money - round(($donestocks * $value[$pschedule['symbol']] * 0.002));
-								$sql = "update player set liq_cash = '{$money}', short_val = '{$shrtval}', rank='1' where id = '$id'";
-								$resultset = mysql_query($sql) or die(mysql_error());					
-								$sql="update schedule set pend_no_shares = '{$pendstock}' where skey='{$pschedule['skey']}'";
-								mysql_query($sql) or die(mysql_error());
-							}					
-						}
-					}
-					if($pschedule['transaction_type']=="s")		//sell
-					{
-$sql="select * from bought_stock where id = '$id' and symbol = '{$pschedule['symbol']}'";
-						$bstocks = mysql_query($sql) or die(mysql_error());
-						if(mysql_num_rows($bstocks)>0)
-						{
-							$bstock = mysql_fetch_array($bstocks);
-							$max = $bstock['amount'];
-						}
-						else
-						{
-							$max=0;	
-						}				
-						if($max!=0)
-						{
-							if($max>=$pschedule['pend_no_shares'])
-							{
-								
-                                                                $pendstock=0;
-								$newno=$max-$pschedule['pend_no_shares'];
-								$donestocks=$pschedule['pend_no_shares'];
-							}
-							else
-							{
-								$pendstock=$pschedule['pend_no_shares']-$max;
-								$newno=0;
-								$donestocks=$max;
-							}
-					
-							if($newno == 0)
-							{
-								$sql = "delete from bought_stock where id = '$id' and symbol = '{$pschedule['symbol']}'";
-							}
-							else
-							{
-								$sql = "update bought_stock set amount = '$newno' where id = '$id' and symbol = '{$pschedule['symbol']}'";
-							}
-							$resultset = mysql_query($sql) or die(mysql_error());
-							if($resultset)
-							{
-								
-								$resultset = mysql_query($sql) or die(mysql_error());
-								$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-								$hsql = "insert into history (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
-								mysql_query($hsql) or die(mysql_error());							
-								
-								$mval = $mval - ($donestocks * $value[$pschedule['symbol']]);
-								$money = $money + round(($donestocks * $value[$pschedule['symbol']] * 0.998));
-								$sql = "update player set liq_cash = '{$money}', rank='1' where id = '$id'";
-								$resultset = mysql_query($sql) or die(mysql_error());
-								$sql="update schedule set pend_no_shares = '{$pendstock}' where skey='{$pschedule['skey']}'";
-								mysql_query($sql) or die(mysql_error());					
-							}					
-						}
-					}
-					else if($pschedule['transaction_type']=="c")	//cover
-					{
-						$sql="select * from short_sell where id = '$id' and symbol = '{$pschedule['symbol']}'";
-						$bstocks = mysql_query($sql) or die(mysql_error());
-						if(mysql_num_rows($bstocks)>0)
-						{
-							$bstock = mysql_fetch_array($bstocks);
-							$max = $bstock['amount'];
-						}
-						else
-						{
-							$max = 0;
-						}					
-						if($max!=0)
-						{
-							if($max>$pschedule['pend_no_shares'])
-							{
-								$pendstock=0;
-								$newno=$max-$pschedule['pend_no_shares'];
-								$donestocks=$pschedule['pend_no_shares'];
-							}
-							else
-							{
-								$pendstock=$pschedule['pend_no_shares']-$max;
-								$newno=0;
-								$donestocks=$max;
-							}
-							$tme = strftime("%Y-%m-%d", time());
-							if($newno == 0)
-							{
-								$sql = "delete from short_sell where id = '$id' and symbol = '{$pschedule['symbol']}'";
-							}
-							else
-							{					
-								$sql = "update short_sell set amount = '{$newno}' where id = '$id' and symbol = '{$pschedule['symbol']}'";						
-							}
-							$resultset = mysql_query($sql) or die(mysql_error());
-							if($resultset)
-							{
-								$tm = strftime("%Y-%m-%d %H:%M:%S", time());
-								$hsql = "insert into history  (`t_time`, `p_id`, `t_type`, `symbol`, `skey`, `amount`, `value`, `p_mval`, `p_liqcash`) values('$tm', '$id', '{$pschedule['transaction_type']}', '{$pschedule['symbol']}', '{$pschedule['skey']}', '$donestocks',  '{$value[$pschedule['symbol']]}', '$mval', '$money')";
-								mysql_query($hsql) or die(mysql_error());	
-								
-								$shrtval=$shrtval-$donestocks * $bstock['val'];
-								$shortprofit = ($bstock['val'] - $value[$pschedule['symbol']]) * $donestocks;
-								$money = $money - round(($donestocks * $value[$pschedule['symbol']] * 0.002)) + $shortprofit;
-								$sql = "update player set liq_cash = '{$money}', short_val = '{$shrtval}', rank='1' where id = '$id'";
-								$resultset = mysql_query($sql) or die(mysql_error());	
-								$sql="update schedule set pend_no_shares = '{$pendstock}' where skey='{$pschedule['skey']}'";
-								mysql_query($sql) or die(mysql_error());				
-							}
-						}
-					}			
-				}
-			}
-								
-			$market_val = 0;
-			$sql = "select * from bought_stock where id = '$id'";
-			$playerstocks = mysql_query($sql) or die(mysql_error());
-			while($playerstock = mysql_fetch_assoc($playerstocks))
-			{
-				$market_val += $playerstock['amount'] * $value[$playerstock['symbol']];
-			}
-			$sql = "select * from short_sell where id = '$id'";
-			$shrtstocks = mysql_query($sql) or die(mysql_error());
-			while($shrtstock = mysql_fetch_assoc($shrtstocks))
-			{
-				$market_val += $shrtstock['amount'] * ( $shrtstock['val']-$value[$shrtstock['symbol']] );
-			}
-			$market_val = round($market_val);
-	
-			$sql = "update player set market_val= {$market_val} where id ='$id'";
-			mysql_query($sql) or die(mysql_error());
-		}
-	}
-	else
-		header('Location:../home.php');
+		echo(date("Y-m-d",time()));
+		require_once("marketval_update.php");
+	} else header("Location: ../home.php");
 ?>
