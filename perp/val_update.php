@@ -31,7 +31,7 @@ require_once("../includes/transactions.php");
 				case "B":
 					$amount = max(min(floor( ($Players[$Schedule['id']]['liq_cash']- ($Players[$Schedule['id']]['short_val'] / 4) ) / (1.002 * $Schedule['value'] ) ), floor( ($Players[$Schedule['id']]['liq_cash'] + $Players[$Schedule['id']]['market_val']) / (6*1.002*$Schedule['value']) ) - $Players[$Schedule['id']][$Schedule['symbol']]['bought']), 0);
 					$amount = max(min($Schedule['amount'], $amount), 0);
-					if ($amount && !Buy($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
+					if ($amount && Buy($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
 						$Players[$Schedule['id']]['liq_cash'] -= $amount * $Schedule['value'] * 1.002;
 						$Players[$Schedule['id']]['market_val'] += $amount * $Schedule['value'];
 						$Players[$Schedule['id']][$Schedule['symbol']]['bought'] += $amount;
@@ -39,7 +39,7 @@ require_once("../includes/transactions.php");
 				break;
 				case "S":					
 					$amount = max(min($Schedule['amount'], $Players[$Schedule['id']][$Schedule['symbol']]['bought']), 0);
-					if ($amount && !Sell($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
+					if ($amount && Sell($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
 						$Players[$Schedule['id']]['liq_cash'] += $amount * $Schedule['value'] * 0.998;
 						$Players[$Schedule['id']]['market_val'] -= $amount * $Schedule['value'];
 						$Players[$Schedule['id']][$Schedule['symbol']]['bought'] -= $amount;
@@ -48,7 +48,7 @@ require_once("../includes/transactions.php");
 				case "SS":
 					$amount = max(min(floor( ((4 * $Players[$Schedule['id']]['liq_cash'] ) - $Players[$Schedule['id']]['short_val'] ) / ( $Schedule['value'] * 1.004 ) ), floor( ($Players[$Schedule['id']]['liq_cash'] + $Players[$Schedule['id']]['market_val'] - $Players[$Schedule['id']]['short_val'] ) / (6 * $Schedule['value'] * 1.004) )) - $Players[$Schedule['id']][$Schedule['symbol']]['shorted'], 0);
 					$amount = max(min($Schedule['amount'], $amount), 0);
-					if ($amount && !Short($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
+					if ($amount && Short($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
 						$Players[$Schedule['id']]['liq_cash'] -= $amount * $Schedule['value'] * .002;
 						$Players[$Schedule['id']]['short_val'] += $amount * $Schedule['value'];
 						$Players[$Schedule['id']][$Schedule['symbol']]['shorted'] += $amount;
@@ -56,7 +56,7 @@ require_once("../includes/transactions.php");
 				break;
 				case "C":
 					$amount = max(min($Schedule['amount'], $Players[$Schedule['id']][$Schedule['symbol']]['shorted']), 0);
-					if ($amount && !Cover($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
+					if ($amount && Cover($Schedule['id'], $Schedule['symbol'], $amount, $array, $Schedule['skey'])) {
 						$Players[$Schedule['id']]['liq_cash'] += ($Players[$Schedule['id']][$Schedule['symbol']]['s_val'] - $Schedule['value'] * 0.998) * $amount;
 						$Players[$Schedule['id']]['short_val'] -= $amount * $Schedule['value'];
 					}

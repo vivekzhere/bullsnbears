@@ -21,7 +21,7 @@ require_once("config.php");
 			} else $mysqli->rollback(); 
 		} else $mysqli->rollback();
 		$mysqli->autocommit(TRUE);
-		return $err_flag;
+		return !$err_flag;
 	}
 
 
@@ -46,7 +46,7 @@ require_once("config.php");
 			} else $mysqli->rollback(); 
 		} else $mysqli->rollback();
 		$mysqli->autocommit(TRUE);
-		return $err_flag;
+		return !$err_flag;
 	}
 
 	function Short($id, $symbol, $amount, $stock_data, $skey) {
@@ -69,7 +69,7 @@ require_once("config.php");
 			} else $mysqli->rollback(); 
 		} else $mysqli->rollback();
 		$mysqli->autocommit(TRUE);
-		return $err_flag;
+		return !$err_flag;
 	}
 
 	function Cover($id, $symbol, $amount, $stock_data, $skey) {
@@ -97,6 +97,6 @@ require_once("config.php");
 			} else $mysqli->rollback();
 		}
 		$mysqli->autocommit(TRUE);
-		return $err_flag;
+		return !$err_flag;
 	}
 ?>

@@ -37,8 +37,8 @@ require_once("includes/transactions.php");
 	if ($err_flag || !is_numeric($amount)) header("Location: trade.php") or die();
 	if ($amount > $max_amount) echo "The Amount you specified is too much. Try a lower value.";
 	else if ($amount < 1) echo "Positive Amount Needed.";
-	else if ($type == "Buy") if (Buy($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";
-	else  if ($type == "Sell") if (Sell($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";
-	else if ($type == "Short") if (Short($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";
-	else  if ($type == "Cover") if (Cover($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Failure"; else echo "Success";
+	else if ($type == "Buy") if (Buy($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Success"; else echo "Failure";
+	else  if ($type == "Sell") if (Sell($_SESSION['id'], $symbol, $amount, $result, -1)) 	echo "Success"; else echo "Failure";
+	else if ($type == "Short") if (Short($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Success"; else echo "Failure";
+	else  if ($type == "Cover") if (Cover($_SESSION['id'], $symbol, $amount, $result, -1)) echo "Success"; else echo "Failure";
 ?>
