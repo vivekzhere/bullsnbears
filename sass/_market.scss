@@ -1,0 +1,19 @@
+#marketTable {
+	@extend %bigTable;
+	@media only screen and (max-width: 911px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+		@include responsivetable;
+		td:nth-of-type(1):before { content: "Symbol"; }
+		td:nth-of-type(2):before { content: "Name"; }
+		td:nth-of-type(3):before { content: "Price"; }
+		td:nth-of-type(4):before { content: "Change %"; }
+		td:nth-of-type(5):before { content: "Day High"; }
+		td:nth-of-type(6):before { content: "Day Low"; }
+		td:nth-of-type(7):before { content: "Year High"; }
+		td:nth-of-type(8):before { content: "Year Low"; }
+	}
+}
+
+#marketRefresh {
+	float: right;
+	margin-right: calc(5% + 20px);
+}

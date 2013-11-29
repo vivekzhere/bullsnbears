@@ -1,5 +1,5 @@
 <?php
-require_once("includes/global.php");
+require_once("../includes/global.php");
 
 	$sql = "SELECT `id`, `name`,  `market_val` + `liq_cash` AS tot FROM `player` WHERE `rank` <> 0 ORDER BY `tot` DESC LIMIT 20";
 	$resultset = $mysqli->query($sql) or die(mysql_error());

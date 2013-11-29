@@ -12,8 +12,8 @@
 }
 </style>
 <body>
+<? require_once("includes/nav.php"); ?>
 <div id="content">
-	<?php Menu(); ?><br/>
 
 	<h2>Feedback</h2>
 	<br/>

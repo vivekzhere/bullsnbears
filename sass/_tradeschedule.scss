@@ -1,0 +1,30 @@
+#tradeTable, #scheduleTable {
+	width: 95%;	
+}
+
+#transaction {
+	@extend %stock_stuff;
+}
+
+#type-select {
+	width: 150px;
+	position: relative;
+	left: calc(50% - 80px);
+}
+
+#stock-select {
+	width: 250px;
+	position: relative;
+	left: calc(50% - 130px);	
+}
+
+#tradeTable {
+	position: relative;
+	left: 10px;
+}
+
+#transactionAmount {
+	position: relative;
+	left: 30px;
+	margin-right: 40px;
+}

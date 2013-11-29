@@ -1,0 +1,24 @@
+#lookup {
+	@extend %stock_stuff;
+}
+
+#symbol-select {
+	width: 200px;
+}
+
+#stock {
+	margin-top: 40px;
+	width: 400px;
+	height: 300px;
+	li {
+		width: 150px;
+	}
+}
+
+#img-stock {
+	background-size: 215px 240px;
+	width: 200px;
+	height: 190px;
+	margin: 30px 0 0 20px;
+	float: left;
+}

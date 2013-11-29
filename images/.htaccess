@@ -1,6 +1,21 @@
 <IfModule mod_expires.c>
+
+# Enable Expirations
 ExpiresActive On
-<FilesMatch "\.(jpg|jpeg|png)$">
- ExpiresDefault "access plus 1 month"
-</FilesMatch>
+
+# Default Expiration Time
+ExpiresDefault "access plus 1 month"
+
+# Expiration for Images
+ExpiresByType image/gif "access plus 1 month"
+ExpiresByType image/png "access plus 1 month"
+ExpiresByType image/jpg "access plus 1 month"
+ExpiresByType image/jpeg "access plus 1 month"
+
+# Expiration for CSS
+ExpiresByType text/css "access plus 1 month”
+
+# Expiration for JavaScript
+ExpiresByType application/javascript "access plus 1 month"
+
 </IfModule>

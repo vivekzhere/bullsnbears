@@ -1,0 +1,59 @@
+#ticker {
+	width: 100%;
+	height: 20px;
+	position: fixed;
+	bottom: 0px;
+	font: 14px Helvetica;
+	line-height: 20px;
+	color: #fff;
+	z-index: 10000;
+	transition: bottom 0.5s ease-out;
+	background: $red;
+    white-space: nowrap;
+    box-sizing: border-box;
+    -webkit-animation: marquee 50s linear infinite;
+    animation: marquee 50s linear infinite;
+    &:before {
+		content: "";
+		position: absolute;
+		width: 40px;
+		height: 20px;
+		line-height: 20px;
+		left: 0;
+		right: 0;
+		margin: {
+			left: auto;
+			right: auto;
+			top: -20px;
+		}
+		text-align: center;
+		background: $red;
+		border-radius: 90px 90px 0 0;
+		-moz-border-radius: 90px 90px 0 0;
+     	-webkit-border-radius: 90px 90px 0 0;
+	}
+	&:hover {
+		cursor: pointer;
+		-webkit-animation-play-state: paused;
+		animation-play-state: paused;
+	}
+
+}
+
+.ticker-data {
+	margin-left: 1em;
+	&:before, &:after {
+		content: "\02022";
+		padding: 10px;
+	}
+}
+
+@keyframes marquee {
+	0%		{ text-indent: 27.5em }
+	100%	{ text-indent: -105em }
+}
+
+@-webkit-keyframes marquee {
+	0%		{ text-indent: 27.5em }
+	100%	{ text-indent: -105em }
+}

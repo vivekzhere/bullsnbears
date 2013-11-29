@@ -6,8 +6,9 @@ require_once("includes/sanitize.php");
  ?>
 </head>
 <body>
+<?php if (isset($_SESSION['id'])) require_once("includes/nav.php"); ?>
 	<div id="content">
-		<?php if (isset($_SESSION['id'])) Menu(); ?>
+		
 		<br/><button id="rankingsRefresh" style="float: right; margin-right: 10px;" class="button btn-green" onclick="updateRankings()">Refresh</button>
 		<div id="rankings">
 			<div id="leaderboard">
@@ -69,7 +70,7 @@ require_once("includes/sanitize.php");
 	<script>
 		function updateRankings() {
 	    	pr = document.getElementById("rankingsRefresh");
-    		AjaxGet('updaterankings.php');
+    		AjaxGet('update/rankings.php');
 			pr.className = pr.className.replace(" btn-green",""); pr.disabled = true;
 	    	setTimeout(function() { pr.className = pr.className + " btn-green"; pr.disabled = false; }, 30000);		    		
 		};

@@ -1,0 +1,68 @@
+@media screen and (min-device-width: 320px) and (max-device-width: 440px)	{
+
+	#title, #nav_menu { display: none; }
+
+	#name {
+		font-size: 1.2em;
+	}
+
+	#logo {
+		margin-left: 40px;
+	}
+
+	#nav_menu {
+		width: 340px;
+	}
+
+	.btn_menu {
+		font-size: 0.8em;
+		width: 60px;
+		margin-right: 3px;
+	}
+
+
+	#Stats {
+		.data_name { margin-left: 1.5em; 	}
+		.data { margin-right: 1.5em; }
+	}
+
+	#NiftyChart {
+		display: none;
+		border: 0px;
+	}
+
+	#content {
+		width: 96%;
+		margin-left: 2%;
+	}
+
+	#Stats {
+		width: 90%;
+		margin-left: 5%;
+	}
+
+	#stock {
+		width: 330px;
+		margin-left: calc(50% - 165px);
+	}
+
+	#img-stock {
+		background-size: 172px 192px;
+		width: 160px;
+		height: 152px;
+		width: 125px;
+		height: 160px;
+	}
+
+	#symbol {
+		width: 330px;
+	}
+
+	#transaction {
+		width: 330px;
+	}
+
+	#stock > h2 {
+		font-size: 23px;
+	}
+}

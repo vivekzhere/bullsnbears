@@ -44,20 +44,25 @@ require_once("includes/sanitize.php");
 			if ($type == "Sell" && $symbols[$i]['bought_amount'] == 0) $symbol = "";
 			else if ($type == "Cover" && $symbols[$i]['shorted_amount'] == 0) $symbol = "";
 		} else $symbol = "";
+		$p = $mysqli->query("SELECT MAX(time_stamp) FROM stocks");
+		$p = $p->fetch_array();
+		$p = strtotime(($p[0])) - time();
+		$p = ($p < 120) ? $p : 30;
+		$p = ($p < 0) ? 12000 : $p;
 	} else $mtime = false;
 	metadetails();
 ?>
 
 </head>
 <body>
-	<div id="banner"></div>
-	<?php Menu(); if ($mtime) { ?>
-
-		<form id="transaction" action="" onsubmit="return false;" oninput="ChangeAmount();">
+	<?php
+		require_once("includes/nav.php");
+		if ($mtime) { ?>
+		<form id="transaction" class="box box1" action="" onsubmit="return false;" oninput="ChangeAmount();">
 			<h2 id="transactionHeading" align="center"><?=$type?></h2><br/>
-			<select id="type-select" onchange="ChangeType(this.value, this.item(this.selectedIndex).innerHTML)">
+			<select id="type-select" onchange="ChangeType(this.item(this.selectedIndex).innerHTML)">
 				<option value="Buy"<?php if ($type == "Buy") echo " selected=\"selected\""; ?>>Buy</option><option value="Sell"<?php if ($type == "Sell") echo " selected=\"selected\""; ?>>Sell</option><option value="Short"<?php if ($type == "Short") echo " selected=\"selected\""; ?>>Short Sell</option><option value="Cover"<?php if ($type == "Cover") echo " selected=\"selected\""; ?>>Cover</option>
-			</select><br/>
+			</select>
 			<select id="stock-select" onchange="ShowValue(this.value)">
 			<?php
 				foreach ($symbols as $stock)
@@ -67,15 +72,14 @@ require_once("includes/sanitize.php");
 						echo ">{$stock['name']}</option>";					
 					}
 			?>
-			</select>
+			</select><br/>
 			<table id="tradeTable">
 				<thead><tr><th>Max Amount</th><th>Value</th><th>Total Cost</th></tr></thead>
 				<tbody id="Trade-Symbol"></tbody>
 			</table>
 			<input id="transactionAmount" type="number" min=1 pattern="[0-9]+" placeholder="Enter Amount Here" required />
-			<input id="transactionSubmit" onclick="DoTrade();" type="submit" value="Trade" />
+			<input id="transactionSubmit" class="btn btn-green" onclick="DoTrade();" type="submit" value="Trade" />
 		</form>
-
 		
 		
 			
@@ -88,15 +92,23 @@ require_once("includes/sanitize.php");
 	<script>
 		ReGet = 1;
 		max_amount = 0;
-		setTimeout(function() { ReGet = 1; }, 15000);
-		ShowValue();
 
-		function ChangeType(t, u) {
-			stock = JSON.parse(document.getElementById('stock-data').innerHTML);
+		dSD = $('#stock-data');
+		dSS = $('#stock-select');
+		dTSy = $('#Trade-Symbol');
+		dT = $('#transaction');
+		dTA = $('#transactionAmount');
+		dTH = $('#transactionHeading');
+		dTS = $('#transactionSubmit');
+		dTyS = $('#type-select');
+
+		ShowValue();
+		function ChangeType(t) {
+			stock = JSON.parse(dSD.innerHTML);
 			data = "";
 			switch (t) {
 				case "Buy":
-				case "Short":
+				case "Short Sell":
 					for (i in stock) data += "<option value='"+stock[i]['symbol']+"'>"+stock[i]['name']+"</option>";
 					break;
 				case "Sell":	
@@ -106,80 +118,74 @@ require_once("includes/sanitize.php");
 					for (i in stock) if (stock[i]['shorted_amount'] != 0) data += "<option value='"+stock[i]['symbol']+"'>"+stock[i]['name']+"</option>";
 					break;
 			}
-			document.getElementById('stock-select').innerHTML = data;
-			document.getElementById('transactionHeading').innerHTML = u;
+			dSS.innerHTML = data;
+			dTH.innerHTML = t;
 			ShowValue();
 		};
 		function ShowValue(a) {
-			a = a || document.getElementById('stock-select').value;
+			a = a || dSS.value;
 			if (!a) {
-				document.getElementById('Trade-Symbol').innerHTML = "Nothing To Show Here!";
-				document.getElementById('transactionAmount').disabled = true;
-				document.getElementById('transactionSubmit').disabled = true;
+				dTSy.innerHTML = "Nothing To Show Here!";
+				dTA.disabled = true;
+				dTS.disabled = true;
 				return;
 			}
-			document.getElementById('transactionAmount').disabled = false;
-			document.getElementById('transactionSubmit').disabled = false;
-			if (ReGet) AjaxGet('updatetrade.php');
+			dTA.disabled = false;
+			dTS.disabled = false;
+			if (ReGet) AjaxGet('update/trade.php');
 			else {
-				p = JSON.parse(document.getElementById('stock-data').innerHTML);
-				t = document.getElementById('type-select').value;
-				for (i = 0; p[i] && p[i]['symbol'] != a; i++);
+				p = JSON.parse(dSD.innerHTML);
+				t = dTyS.value;
 				switch (t) {
 					case "Buy":
-						max_amount = p[i]['max_buy'];
-						data = "<tr><td>"+p[i]['max_buy']+"</td>";
+						max_amount = p[a]['max_buy'];
+						data = "<tr><td>"+p[a]['max_buy']+"</td>";
 						break; 
 					case "Short":
-						max_amount = p[i]['max_short'];
-						data = "<tr><td>"+p[i]['max_short']+"</td>";
+						max_amount = p[a]['max_short'];
+						data = "<tr><td>"+p[a]['max_short']+"</td>";
 						break;
 					case "Sell":	
-						max_amount = p[i]['bought_amount'];
-						data = "<tr><td>"+p[i]['bought_amount']+"</td>";
+						max_amount = p[a]['bought_amount'];
+						data = "<tr><td>"+p[a]['bought_amount']+"</td>";
 						break;
 					case "Cover":
-						max_amount = p[i]['shorted_amount'];
-						data = "<tr><td>"+p[i]['shorted_amount']+"</td>";
+						max_amount = p[a]['shorted_amount'];
+						data = "<tr><td>"+p[a]['shorted_amount']+"</td>";
 						break;
 				};
-				data += "<td id='stock_value'>"+p[i]['value']+"</td><td id='sale_value'>"+(p[i]['value'] * 1.002).toFixed(2)+"</td>";
-				ta = document.getElementById('transactionAmount');
-				ta.value = 1;
-				ta.max = max_amount;
-				document.getElementById('Trade-Symbol').innerHTML = data; 
+				data += "<td id='stock_value'>"+p[a]['value']+"</td><td id='sale_value'>"+(p[a]['value'] * 1.002).toFixed(2)+"</td>";
+				dTA.value = 1;
+				dTA.max = max_amount;
+				dTSy.innerHTML = data;
 			}
 		};
 
 		function ChangeAmount() {
-			p = document.getElementById('transactionAmount');
-			t = (p.value == "") ? 1 : parseInt(p.value);
-			if (t < p.min) t = 1;
-			else if (t > p.max) t = p.max;
-			if (p.value != "") p.value = t;
-			document.getElementById('sale_value').innerHTML = (t * parseFloat(document.getElementById('stock_value').innerHTML) * 1.002).toFixed(2);
+			t = (dTA.value) ? parseInt(dTA.value) : 1;
+			if (t < dTA.min) t = 1;
+			else if (t > dTA.max) t = dTA.max;
+			if (dTA.value != "") dTA.value = t;
+			$('#sale_value').innerHTML = (t * parseFloat($('#stock_value').innerHTML) * 1.002).toFixed(2);
 		};
 		
 		function DoTrade() {
-			if (!document.getElementById("transaction").checkValidity()) return;
-			type = document.getElementById("type-select").value;
-			symbol = document.getElementById("stock-select").value;
-			amount = document.getElementById("transactionAmount").value;
-			AjaxGet("dotrade.php?type=" + type + "&symbol=" + symbol + "&amount=" + amount);
+			if (!dT.checkValidity()) return;
+			AjaxGet("dotrade.php?type=" + dTyS.value + "&symbol=" + dSS.value + "&amount=" + dTA.value);
 		};
 
 		function Ajax_Success(a, b, c) {
-			if (a == 'updatetrade.php') {
-				document.getElementById('stock-data').innerHTML = c;
+			if (a == 'update/trade.php') {
+				dSD.innerHTML = c.substring(5, c.indexOf("</div>"));
 				ReGet = 0;
-				setTimeout(function() { ReGet = 1}, 15000);
+				setTimeout(function() { ReGet = 1}, parseInt(c.substring(c.indexOf("</div>") + 6)) * 1000);
 				ShowValue();				
 			} else {
 				alert(c);
 				ReGet = 1;
-				AjaxGet('updatetrade.php');
+				AjaxGet('update/trade.php');
 			}
-		}
+		};
 	</script>
 </body>
 </html>

@@ -1,12 +1,10 @@
 @import "compass/reset";
+@import "colourmap";
 @import "layout";
 
 #login {
 	width: 250px;
 	height: 250px;
-	@include center;
-	@include box;
-	@include stylebg;
 }
 
 #login-btn {
@@ -26,12 +24,9 @@
 	height: 120px;
 	position: absolute;
 	bottom: 10px;
-	@include box;
-	@include stylebg;
 }
 
 #fb-like {
-	@include centerh;
 	width: 25px;
 	margin-top: 5px;
 }
@@ -46,7 +41,6 @@
 
 #user-img {
 	display: block;
-	@include center;
 	top: 0;
 	bottom: 34px;
 }

@@ -1,0 +1,56 @@
+.btn {
+	font-size: 1em;
+	line-height: 1em;
+	background: $silver3;
+	border: 1px solid $silver4;
+	border-radius: 2px;
+	-moz-transition: all 0.3s;
+	-o-transition: all 0.3s;	
+	-webkit-transition: all 0.3s;
+	padding: 0.5em;
+	transition: all 0.3s;
+	text-align: center;
+	text-decoration: none;
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.btn-red {
+	color: #fff;
+	background: $lightred;
+	&:hover {
+		background: $red;
+	}
+}
+
+.btn-green {
+	background-color: $green;
+	color: #fff;
+	&:hover {
+		background-color: $lightgreen;
+	}
+}
+
+.btn-blue {
+	background: $lightblue;
+	color: #fff;
+	&:hover {
+		background: $blue;
+	}
+}
+
+.button {
+	border: none;
+	font-size: 1.2em;
+	-webkit-transition: all 0.4s ease-out;
+	-moz-transition: all 0.4s ease-out;
+	-o-transition: all 0.4s ease-out;
+	transition: all 0.4s ease-out;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	&:hover {
+		cursor: pointer;
+	}
+}

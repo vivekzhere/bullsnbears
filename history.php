@@ -10,14 +10,13 @@ if (!(isset($_SESSION['id']) && in_array($_SESSION['id'], $admins))) {
 ?>
 </head>
 <body>
-	<div id="banner"></div>
-	<?php Menu(); ?>
+	<?php require_once("includes/nav.php"); ?>
 	<div id="content">
 		<h2 align="center">Transaction History</h2>
 		<?php 
 		if ($results->num_rows != 0)  {
 		?>
-		<br/><br/><table id="historyTable">
+		<br/><br/><table id="historyTable" class="box box1">
 			<thead><tr>
 				<th>Time</th><th>Type</th><th>Stock</th><th>Amount</th><th>Stock Price</th><th>Value</th><th>Brokerage</th>
 			</tr></thead>

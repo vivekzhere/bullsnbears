@@ -1,0 +1,198 @@
+nav {
+	height: 105px;
+	width: 100%;
+}
+
+#nav_a {
+	position: relative;
+	line-height: 60px;
+	height: 60px;
+	background: #fff;
+}
+
+#nav_b {
+	height: 45px;
+	background: $silver2;
+}
+
+#nav_menu {
+	width: 580px;
+	padding-top: 5px;
+}
+
+.btn_menu {
+	display: inline-block;
+	width: 100px;
+	font-size: 16px;
+	overflow: hidden;
+	text-align: center;
+	margin-right: 10px;
+	padding: 5px 0;
+	vertical-align: top;
+	-moz-transition: border-color .218s;
+	-webkit-transition: border-color .218s;
+	transition: border-color .218s;
+	color: $silver;
+	border-bottom: 2px solid transparent;
+	line-height: 25px;
+	text-decoration: none;
+	&:hover {
+		color: $blackons;
+		border-color: $blue;
+		cursor: pointer;
+	}
+}
+
+.btn_active {
+	color: $blackons !important;
+	border-color: $blue !important;
+}
+
+#title {
+	margin-left: 10px;
+	text-align: center;
+	font: 1.6em Helvetica, Arial, Sans-Serif;
+	text-decoration: none;
+	color: $blue;
+	display: inline-block;
+}
+
+#logo {
+	width: 120px;
+	height: 60px;
+	background: {
+		image: url('../images/logo.gif');
+		size: 120px 60px;
+	}
+}
+
+#name {
+	float: right;
+	color: $red;
+	font: 1.6em Helvetica, Arial, Sans-Serif;
+	line-height: 60px;
+	margin-right: 10px;
+	display: inline-block;
+	&:hover {
+		cursor: pointer;
+		+ #title_popdown {
+			@extend #title_popdown:hover;
+		}
+	}
+}
+
+#title_popdown {
+	margin-top: -15px;
+	right: 20px;
+	position: absolute;
+	width: 0px;
+	height: 0px;
+	padding-top: 15px;
+	border-width: 0px;
+	overflow: hidden;
+	background-color: #fff;
+	z-index: 100;
+	-moz-transition: height 0.3s ease-out;
+	-webkit-transition: height 0.3s ease-out;
+	transition: height 0.3s ease-out;
+	&:after {
+		content:"";
+		position: absolute;
+	    top: -8px;
+	    right: 15px;
+		border-color: transparent;
+		border-bottom-color: #ccc;
+		border-style: dashed dashed solid;
+		border-width: 0 8px 8px;
+	}
+	&:hover {
+		border-width: 1px;
+		line-height: 1.5em;
+		overflow: visible;
+		width: 250px;
+		height: 170px;
+	}
+}
+
+#btn-logout {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: auto;
+	margin-top: 10px;
+	width: 100px;
+	height: 1em;
+	line-height: 1em;
+}
+
+.tp_name {
+	margin-left: 20px;
+	float: left;
+	width: 110px;
+}
+
+.tp_value {
+	margin-right: 20px;
+	float: right;
+	width: 100px;
+	text-align: center;
+}
+
+#nav_main-btn {
+	color: $silver;
+	display: inline-block;
+	width: 70px;
+	margin-top: 5px;
+	margin-left: 20px;
+	float: left;
+	background: #FFF;
+	text-align: center;
+	border-radius: 3px;
+	box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+	margin: 7px 0 7px 30px;
+	padding: 5px 5px 5px 5px;
+	transition: width 0.1s, left 0.4s;
+	-webkit-transition: width 0.3s, left 0.3s;
+	&:hover + #nav_side {
+		left: 0px;
+	}
+}
+.nav_side-btn {
+	display: block;
+	position: relative;
+	text-decoration: none;
+	color: $silver;
+	height: 10%;
+	width: 100%;
+	background: #FFF;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+	&:hover {
+		color: $blackons;
+		cursor: pointer;
+		background: $silver2;
+	}
+	> div {
+		height: 1em;
+		margin-left: 40px;
+	}
+}
+
+#nav_side {
+	width: 180px;
+	position: absolute;
+	left: -180px;
+	top: 60px;
+	bottom: 0;
+	margin: auto;
+	z-index: 100;
+	box-shadow: 0 0 20px 0 rgba(0,0,0,.2);
+	-webkit-box-shadow: 0 0 20px 0 rgba(0,0,0,.2);
+	background: #fff;
+	border-top: 1px solid #e5e5e5;
+	transition: all 0.3s;
+	&:hover {
+		left: 0px;
+	}
+}

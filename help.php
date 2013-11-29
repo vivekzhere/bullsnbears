@@ -5,19 +5,18 @@ require_once("includes/sanitize.php");
  ?>
 </head>
 <body>
-	<div id="banner"></div>
-	<?php if (isset($_SESSION['id'])) Menu(); ?>
+<?php if (isset($_SESSION['id'])) require_once("includes/nav.php"); ?>
 	<div id="content">
-		<div id="help">
-			<h2 align="center">Help</h2>
-			<button style="float: right;" class="button btn-green" onclick="updateHelp();">Show Rules</button>
+		<div id="Help" class="box box1">
+			<h2>Help</h2>
+			<button style="float: right;" class="btn btn-green" onclick="updateHelp();">Show Rules</button>
 			<br/><br/>
 			<ul>
 				<li> What Are Stocks?
-					<p>Plain and simple, a stock is a share in the ownership of a company. Stock represents a claim on the company's assets and earnings. As you acquire more stock, your ownership stake in the company becomes greater. Whether you say shares, equity, or stock, it all means the same thing.<br />It must be emphasized that there are no guarantees when it comes to individual stocks. Some companies pay out dividends, but many others do not. And there is no obligation to pay out dividends even for those firms that have traditionally given them. Without dividends, an investor can make money on a stock only through its appreciation in the open market. On the downside, any stock may go bankrupt, in which case your investment is worth nothing.</p>
+					<p>Plain and simple, a stock is a share in the ownership of a company. Stock represents a claim on the company's assets and earnings. As you acquire more stock, your ownership stake in the company becomes greater. Whether you say shares, equity, or stock, it all means the same thing.<br /><br/>It must be emphasized that there are no guarantees when it comes to individual stocks. Some companies pay out dividends, but many others do not. And there is no obligation to pay out dividends even for those firms that have traditionally given them. Without dividends, an investor can make money on a stock only through its appreciation in the open market. On the downside, any stock may go bankrupt, in which case your investment is worth nothing.</p>
 				</li>
 				<li>Different Types Of Stocks
-					<p>There are two main types of stocks: common stock and preferred stock.</p>
+					<p>There are two main types of stocks: common stock and preferred stock.</p><br/>
 					<h4>Common Stock</h4>
 					<p>Common stock is, well, common. When people talk about stocks they are usually referring to this type. In fact, the majority of stock is issued is in this form</p>
 				 	<h4>Preferred Stock </h4>
@@ -34,15 +33,15 @@ require_once("includes/sanitize.php");
 					<h4>The Bulls</h4>
 					<p>A bull market is when everything in the economy is great, people are finding jobs, gross domestic product (GDP) is growing, and stocks are rising. Things are just plain rosy! Picking stocks during a bull market is easier because everything is going up. Bull markets cannot last forever though, and sometimes they can lead to dangerous situations if stocks become overvalued. If a person is optimistic and believes that stocks will go up, he or she is called a "bull" and is said to have a "bullish outlook".</p>
 					<h4>The Bears</h4>
-					<p>A bear market is when the economy is bad, recession is looming and stock prices are falling. Bear markets make it tough for investors to pick profitable stocks. One solution to this is to make money when stocks are falling using a technique called short selling. Another strategy is to wait on the sidelines until you feel that the bear market is nearing its end, only starting to buy in anticipation of a bull market. If a person is pessimistic, believing that stocks are going to drop, he or she is called a "bear" and said to have a "bearish outlook".</p>
+					<p>A bear market is when the economy is bad, recession is looming and stock prices are falling. Bear markets make it tough for investors to pick profitable stocks. One solution to this is to make money when stocks are falling using a technique called short selling. Another strategy is to wait on the sidelines until you feel that the bear market is nearing its end, only starting to buy in anticipation of a bull market. If a person is pessimistic, believing that stocks are going to drop, he or she is called a "bear" and said to have a "bearish outlook".</p><br/>
 					<h4>The Other Animals on the Farm - Chickens and Pigs</h4>
-					<p>Chickens are afraid to lose anything. Their fear overrides their need to make profits and so they turn only to money-market securities or get out of the markets entirely. While it's true that you should never invest in something over which you lose sleep, you are also guaranteed never to see any return if you avoid the market completely and never take any risk,<br>Pigs are high-risk investors looking for the one big score in a short period of time. Pigs buy on hot tips and invest in companies without doing their due diligence. They get impatient, greedy, and emotional about their investments, and they are drawn to high-risk securities without putting in the proper time or money to learn about these investment vehicles. Professional traders love the pigs, as it's often from their losses that the bulls and bears reap their profits.</p>
+					<p>Chickens are afraid to lose anything. Their fear overrides their need to make profits and so they turn only to money-market securities or get out of the markets entirely. While it's true that you should never invest in something over which you lose sleep, you are also guaranteed never to see any return if you avoid the market completely and never take any risk.<br/><br/>Pigs are high-risk investors looking for the one big score in a short period of time. Pigs buy on hot tips and invest in companies without doing their due diligence. They get impatient, greedy, and emotional about their investments, and they are drawn to high-risk securities without putting in the proper time or money to learn about these investment vehicles. Professional traders love the pigs, as it's often from their losses that the bulls and bears reap their profits.</p>
 				</li>
 			</ul><br/><br/><br/>
 		</div>
-		<div id='help2' style="display: none;">
-			<h2 align="center">Rules</h2>
-			<button class="button btn-green" style="float: right;" onclick="updateHelp()">Show Help</button>
+		<div id='Help2' style="display: none;">
+			<h2>Rules</h2>
+			<button class="btn btn-green" style="float: right;" onclick="updateHelp()">Show Help</button>
 			<br/><br/>
 			<ul>
 				<li> General
@@ -73,11 +72,12 @@ require_once("includes/sanitize.php");
 	<script type="text/javascript">
  	    function updateHelp()
 	    {
-	    	var x = document.getElementById("help");
-	    	var y = document.getElementById("help2");
-	    	var z = x.innerHTML;
+	    	x = document.getElementById("Help");
+	    	y = document.getElementById("Help2");
+	    	z = x.innerHTML;
 	    	x.innerHTML = y.innerHTML;
 	    	y.innerHTML = z;
 		}
 	</script>
 </body>
+</html>
