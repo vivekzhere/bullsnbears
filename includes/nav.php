@@ -21,13 +21,8 @@ require_once("global.php");
 	$Stats['week_gain'] = addarrow($Player['liq_cash'] + $Player['market_val'] - (int)$Player['week_worth']);
 	$Stats['net_worth'] = ininr((int)$Player['liq_cash'] + (int)$Player['market_val']);
 ?>
-	
 	<script>
-		function $(x) {
-			if (x.charAt(0) == '#') return document.getElementById(x.substr(1));
-			else if (x.charAt(0) == '.') return document.getElementsByClassName(x.substr(1));
-			else return document.getElementsByTagName(x);
-		};
+		<? require_once("js/global.js"); ?>
 		tp = 0; side_nav = 0;
 		function ToggleN(x) {
 			if (x == 1) {
