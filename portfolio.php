@@ -24,7 +24,7 @@ require_once("includes/sanitize.php");
 				<tbody>
 				<?php
 					$results = $mysqli->query("SELECT b.`id`, b.`symbol`, b.`amount`, b.`avg`, s.`name`, s.`value` FROM `bought_stock` b, `stocks` s WHERE b.`symbol` = s.`symbol` AND b.`id` = '{$_SESSION['id']}';");
-					if ($results->num_rows != 0) while ($result = $results->fetch_assoc()) echo "<tr onclick=window.location.href='lookup.php?symbol={$result['symbol']}'><td>{$result['name']}</td><td>{$result['amount']}</td><td>{$result['avg']}</td><td>{$result['value']}</td><td>".number_format($result['avg'] * $result['amount'], 2, '.', '')."</td><td>".number_format($result['value'] * $result['amount'], 2, '.', '')."</td><td>".number_format($result['avg'] * $result['amount'] * 0.002, 2, '.', '')."</td><td>".addarrow(number_format((($result['value'] * 0.998) - ($result['avg'] * 1.002)) * $result['amount'], 2, '.', ''))."</td><td onclick=\"window.location.href = 'trade.php?type=Sell&symbol={$result['symbol']}'\" class='btn-red table-btn'>Sell</td></tr>";
+					if ($results->num_rows != 0) while ($result = $results->fetch_assoc()) echo "<tr onclick=window.location.href='trade.php?type=Sell&symbol={$result['symbol']}'><td>{$result['name']}</td><td>{$result['amount']}</td><td>{$result['avg']}</td><td>{$result['value']}</td><td>".number_format($result['avg'] * $result['amount'], 2, '.', '')."</td><td>".number_format($result['value'] * $result['amount'], 2, '.', '')."</td><td>".number_format($result['avg'] * $result['amount'] * 0.002, 2, '.', '')."</td><td>".addarrow(number_format((($result['value'] * 0.998) - ($result['avg'] * 1.002)) * $result['amount'], 2, '.', ''))."</td><td class='btn-red table-btn'>Sell</td></tr>";
 				?>
 				</tbody>
 			</table>
