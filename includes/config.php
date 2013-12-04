@@ -14,6 +14,7 @@
 	$end_time_min = $config['end_time_min'];
 	$start_money = $config['start_money'];
 	$max_stock = $config['max_stock'];
+	$time_offset = $config['time_offset'];
 	$admins = explode(' ', $config['admin_ids']);
 	
 	$debug_status = $config['debug'];

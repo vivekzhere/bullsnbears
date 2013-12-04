@@ -6,10 +6,9 @@ require_once("../includes/global.php");
 	}
 	$p = $mysqli->query("SELECT MAX(time_stamp) FROM stocks");
 	$p = $p->fetch_array();
-	$p = 250 - time() + strtotime(($p[0]));
-	$p = ($p < 0) ? 30 : $p;
+	$p = $time_offset + strtotime($p[0]) + 120 - time();
 	$p = ($p < -300) ? 12000 : $p;
-	if (isset($_REQUEST['skey'])) {
+	$p = ($p < 0) ? 30 : $p;	if (isset($_REQUEST['skey'])) {
 		if (is_numeric($_REQUEST['skey'])) $p = $mysqli->query("DELETE FROM `schedule` WHERE `skey` = ".$_REQUEST['skey']." AND `id` = '{$_SESSION['id']}'");
 		if ($p) { echo "Success"; }
 		else { echo "Failure"; }

@@ -8,8 +8,8 @@ require_once("../includes/global.php");
 	while (($row = $results->fetch_assoc()) && $row['change_perc'] = addarrow($row['change_perc']) && $stocks[$row['symbol']] = $row);
 	$p = $mysqli->query("SELECT MAX(time_stamp) FROM stocks");
 	$p = $p->fetch_array();
-	$p = 250 - time() + strtotime(($p[0]));
-	$p = ($p < 0) ? 30 : $p;
+	$p = $time_offset + strtotime($p[0]) + 120 - time();
 	$p = ($p < -300) ? 12000 : $p;
+	$p = ($p < 0) ? 30 : $p;
 	echo "<div>".json_encode($stocks)."</div>".$p;
 ?>

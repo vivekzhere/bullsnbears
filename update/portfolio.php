@@ -7,10 +7,9 @@ require_once("../includes/global.php");
 	$t = (isset($_GET['t']) && $_GET['t'] == "Shorted")? "Shorted" : "Bought";
 	$p = $mysqli->query("SELECT MAX(time_stamp) FROM stocks");
 	$p = $p->fetch_array();
-	$p = 250 - time() + strtotime(($p[0]));
-	$p = ($p < 0) ? 30 : $p;
+	$p = $time_offset + strtotime($p[0]) + 120 - time();
 	$p = ($p < -300) ? 12000 : $p;
-	if ($t == 'Bought') {
+	$p = ($p < 0) ? 30 : $p;	if ($t == 'Bought') {
 		$Portolio = array();
 		$results = $mysqli->query("SELECT b.`symbol`, b.`amount`, b.`avg`, s.`name`, s.`value` FROM `bought_stock` b, `stocks` s WHERE b.`symbol` = s.`symbol` AND b.`id` = '{$_SESSION['id']}';");
 		while ($result = $results->fetch_assoc()) {

@@ -4,13 +4,11 @@ require_once("../includes/global.php");
 		if (($debug_status == 2) || ($debug_status == 1 && $access_status == 0) || ($debug_status == 1 && $trade_status == 0)) header("Location: testing.html") or die();
 		elseif (!isset($_SESSION['id'])) header("Location: index.php") or die();
 	}
-
 	$p = $mysqli->query("SELECT MAX(time_stamp) FROM stocks");
 	$p = $p->fetch_array();
-	$p = 250 - time() + strtotime(($p[0]));
-	$p = ($p < 0) ? 30 : $p;
+	$p = $time_offset + strtotime($p[0]) + 120 - time();
 	$p = ($p < -300) ? 12000 : $p;
-	$player = $mysqli->query("SELECT `liq_cash`, `market_val`, `short_val` FROM `player` WHERE `id` = '{$_SESSION['id']}'");
+	$p = ($p < 0) ? 30 : $p;	$player = $mysqli->query("SELECT `liq_cash`, `market_val`, `short_val` FROM `player` WHERE `id` = '{$_SESSION['id']}'");
 	$player = $player->fetch_assoc();
 	$result_set = $mysqli->query("SELECT `s`.`symbol`, `s`.`value`, `s`.`name`, IFNULL((`b`.`amount`), 0) AS `bought_amount`, IFNULL((`ss`.`amount`), 0) AS `shorted_amount` FROM `stocks` AS `s` LEFT JOIN `bought_stock` AS `b` ON `s`.`symbol` = `b`.`symbol` AND `b`.`id` = '{$_SESSION['id']}' LEFT JOIN `short_sell` AS `ss` ON `s`.`symbol` = `ss`.`symbol` AND `ss`.`id` = '{$_SESSION['id']}' ORDER BY `name` ASC");
 	$symbols = array();
