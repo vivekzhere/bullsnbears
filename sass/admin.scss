@@ -1,0 +1,42 @@
+@import "compass/reset";
+@import "colourmap";
+@import "buttons";
+@import "layout";
+@import "nav";
+
+%tal-center {
+	text-align: center;
+}
+
+h2 {
+	font-size: 2em;
+	@extend %tal-center;
+}
+
+h3 {
+	font-size: 1.4em;
+	@extend %tal-center;
+}
+
+
+#Overall {
+	width: 350px;
+	height: 180px;
+	margin-top: 70px;
+}
+
+.data {
+	width: 150px;
+	position: absolute;
+	left: 10px;
+}
+
+.value {
+	float: left;
+	margin-left: 170px;
+}
+
+
+li {
+	height: 15px;
+}

@@ -27,8 +27,8 @@ require_once("config.php");
 	<meta charset="UTF-8">
 	<meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
 CONTENT;
-	if ($i == "normal") echo '<link href="stylesheets/global.css" media="screen, projection" rel="stylesheet" type="text/css" />';
-	elseif ($i == "index") echo '<link href="stylesheets/frontpage.css" media="screen, projection" rel="stylesheet" type="text/css" />';
+	if ($i == "normal") echo '<link href="/stylesheets/global.css" media="screen, projection" rel="stylesheet" type="text/css" />';
+	elseif ($i == "index") echo '<link href="/stylesheets/frontpage.css" media="screen, projection" rel="stylesheet" type="text/css" />';
 	}
 
 	function FacebookJS($appId) {
