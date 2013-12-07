@@ -82,7 +82,7 @@ require_once("config.php");
 			if ($amount != $stock_data['shorted_amount']) $p = $mysqli->query("UPDATE `short_sell` SET `val` = ((`val` * `amount`) - ".($amount * $stock_data['value'])." ) / (`amount` - ".$amount." ), `amount` = `amount` - ".$amount." WHERE `id` = '{$id}' AND `symbol` = '{$symbol}'");
 			else $p = $mysqli->query("DELETE FROM `short_sell` WHERE `id` = '{$id}' AND symbol = '{$symbol}'"); 
 			if ($p) {
-				$p = $mysqli->query("UPDATE `player` SET `liq_cash` = `liq_cash` + ".round(($x['val'] - $stock_data['value'] * 0.998) * $amount).", `short_val` = Case When (`short_val` - ".ceil($amount * $stock_data['value']).") < 0 THEN 0 ELSE (`short_val` - ".ceil($amount * $stock_data['value']).") END WHERE `id` = '{$id}'");
+				$p = $mysqli->query("UPDATE `player` SET `liq_cash` = `liq_cash` + ".round(($x['val'] - $stock_data['value'] * 1.002) * $amount).", `short_val` = Case When (`short_val` - ".ceil($amount * $stock_data['value']).") < 0 THEN 0 ELSE (`short_val` - ".ceil($amount * $stock_data['value']).") END WHERE `id` = '{$id}'");
 				if ($p) {
 					$p = $mysqli->query("INSERT INTO `history` ( `p_id`, `t_type`, `symbol`, `amount`, `value`, `skey` ) VALUES ( '{$id}', 'C', '{$symbol}', '{$amount}', '{$stock_data['value']}', '{$skey}' )"); 
 					if ($p) {
